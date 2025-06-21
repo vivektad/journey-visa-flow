@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { Plus, FileText, Clock, CheckCircle, AlertCircle, Users, Calendar, Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import H1BWorkflow from '@/components/H1BWorkflow';
 
 interface VisaWorkflow {
   id: string;
@@ -89,9 +89,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-warm">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-warm-card border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
@@ -113,7 +113,7 @@ const Dashboard = () => {
                 <input 
                   type="text" 
                   placeholder="Search" 
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                 />
               </div>
               <Button className="bg-gray-900 hover:bg-gray-800 text-white rounded-lg px-4 py-2">
@@ -142,28 +142,28 @@ const Dashboard = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-purple-100 border-0">
+          <Card className="bg-warm-purple border border-gray-200">
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-gray-900 mb-2">{stats.current}</div>
               <div className="text-sm text-gray-600">Current Projects</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-yellow-100 border-0">
+          <Card className="bg-soft-orange border border-gray-200">
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-gray-900 mb-2">{stats.inReview}</div>
               <div className="text-sm text-gray-600">In Review</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-blue-100 border-0">
+          <Card className="bg-muted-blue border border-gray-200">
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-gray-900 mb-2">{stats.totalSubmissions}</div>
               <div className="text-sm text-gray-600">Total Submissions</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-green-100 border-0">
+          <Card className="bg-sage border border-gray-200">
             <CardContent className="p-6">
               <div className="text-4xl font-bold text-gray-900 mb-2">{stats.collaborators}</div>
               <div className="text-sm text-gray-600">Collaborators</div>
@@ -172,51 +172,24 @@ const Dashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Workflows Section */}
+          {/* Main Workflow Section */}
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Your Submissions</h2>
-                <p className="text-sm text-gray-500 mt-1">UPDATED: AUG 20, 2025</p>
-              </div>
-              <div className="flex space-x-3">
-                <Button variant="outline" size="sm">All Categories</Button>
-                <Button variant="outline" size="sm">8 Months</Button>
+                <h2 className="text-xl font-semibold text-gray-900">Active H1B Transfer Workflow</h2>
+                <p className="text-sm text-gray-500 mt-1">UPDATED: {new Date().toLocaleDateString().toUpperCase()}</p>
               </div>
             </div>
 
-            <Card className="border-0 shadow-sm">
-              <CardContent className="p-6">
-                {/* Simple chart representation */}
-                <div className="h-64 flex items-end justify-between space-x-1">
-                  {Array.from({ length: 24 }, (_, i) => (
-                    <div key={i} className="flex-1">
-                      <div 
-                        className="bg-gray-300 rounded-t-sm w-full"
-                        style={{ height: `${Math.random() * 100 + 20}%` }}
-                      ></div>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-4">
-                  <span>JAN</span>
-                  <span>FEB</span>
-                  <span>MAR</span>
-                  <span>APR</span>
-                  <span>MAY</span>
-                  <span>JUN</span>
-                  <span>JUL</span>
-                  <span>AUG</span>
-                </div>
-              </CardContent>
-            </Card>
+            {/* H1B Workflow Component */}
+            <H1BWorkflow />
 
             {/* Recent Workflows */}
             <div className="mt-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Workflows</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Other Recent Workflows</h3>
               <div className="space-y-4">
-                {dummyWorkflows.map((workflow) => (
-                  <Card key={workflow.id} className="border border-gray-200 hover:shadow-md transition-shadow">
+                {dummyWorkflows.slice(1).map((workflow) => (
+                  <Card key={workflow.id} className="bg-warm-card border border-gray-200 hover:shadow-md transition-shadow">
                     <CardContent className="p-4">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
@@ -264,10 +237,10 @@ const Dashboard = () => {
             </div>
 
             <div className="space-y-4">
-              <Card className="border border-gray-200">
+              <Card className="bg-warm-card border border-gray-200">
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-muted-blue rounded-lg flex items-center justify-center">
                       <div className="w-6 h-6 bg-blue-500 rounded"></div>
                     </div>
                     <div className="flex-1">
@@ -278,10 +251,10 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border border-gray-200">
+              <Card className="bg-warm-card border border-gray-200">
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-soft-orange rounded-lg flex items-center justify-center">
                       <div className="w-6 h-6 bg-orange-500 rounded-full"></div>
                     </div>
                     <div className="flex-1">
@@ -292,10 +265,10 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="border border-gray-200">
+              <Card className="bg-warm-card border border-gray-200">
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-sage rounded-lg flex items-center justify-center">
                       <div className="w-6 h-6 bg-green-500 rounded"></div>
                     </div>
                     <div className="flex-1">
@@ -306,6 +279,27 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* Quick Actions */}
+            <Card className="bg-warm-card border border-gray-200 mt-6">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button className="w-full justify-start" variant="outline">
+                  <Plus className="w-4 h-4 mr-2" />
+                  New H1B Workflow
+                </Button>
+                <Button className="w-full justify-start" variant="outline">
+                  <FileText className="w-4 h-4 mr-2" />
+                  Generate Documents
+                </Button>
+                <Button className="w-full justify-start" variant="outline">
+                  <Users className="w-4 h-4 mr-2" />
+                  Invite Collaborator
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </main>
