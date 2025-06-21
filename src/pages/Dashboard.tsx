@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { Plus, FileText, Clock, CheckCircle, AlertCircle, Users, Calendar, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import H1BWorkflow from '@/components/H1BWorkflow';
 
 interface VisaWorkflow {
   id: string;
@@ -176,56 +177,55 @@ const Dashboard = () => {
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Active H1B Transfer Workflow</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Active Workflows</h2>
                 <p className="text-sm text-gray-500 mt-1">UPDATED: {new Date().toLocaleDateString().toUpperCase()}</p>
               </div>
             </div>
 
-            {/* H1B Workflow Component */}
-            <H1BWorkflow />
-
-            {/* Recent Workflows */}
-            <div className="mt-8">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Other Recent Workflows</h3>
-              <div className="space-y-4">
-                {dummyWorkflows.slice(1).map((workflow) => (
-                  <Card key={workflow.id} className="bg-warm-card border border-gray-200 hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <h4 className="font-medium text-gray-900">{workflow.employeeName}</h4>
-                            {getStatusBadge(workflow.status)}
-                          </div>
-                          <p className="text-sm text-gray-500 mb-3">{workflow.visaType} Visa</p>
-                          
-                          <div className="flex items-center justify-between text-sm text-gray-500">
-                            <div className="flex items-center space-x-4">
-                              <div className="flex items-center">
-                                <Users className="w-4 h-4 mr-1" />
-                                {workflow.assignedTo}
-                              </div>
-                              <div className="flex items-center">
-                                <Calendar className="w-4 h-4 mr-1" />
-                                Due: {new Date(workflow.dueDate).toLocaleDateString()}
-                              </div>
+            {/* Active Workflows */}
+            <div className="space-y-4">
+              {dummyWorkflows.map((workflow) => (
+                <Card key={workflow.id} className="bg-warm-card border border-gray-200 hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <Link 
+                            to={`/workflow/${workflow.id}`}
+                            className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                          >
+                            {workflow.employeeName}
+                          </Link>
+                          {getStatusBadge(workflow.status)}
+                        </div>
+                        <p className="text-sm text-gray-500 mb-3">{workflow.visaType} Visa</p>
+                        
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center">
+                              <Users className="w-4 h-4 mr-1" />
+                              {workflow.assignedTo}
                             </div>
-                            <div className="text-right">
-                              <div className="text-sm font-medium">{workflow.completionPercentage}%</div>
-                              <div className="w-20 bg-gray-200 rounded-full h-1 mt-1">
-                                <div 
-                                  className="bg-blue-500 h-1 rounded-full"
-                                  style={{ width: `${workflow.completionPercentage}%` }}
-                                ></div>
-                              </div>
+                            <div className="flex items-center">
+                              <Calendar className="w-4 h-4 mr-1" />
+                              Due: {new Date(workflow.dueDate).toLocaleDateString()}
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-sm font-medium">{workflow.completionPercentage}%</div>
+                            <div className="w-20 bg-gray-200 rounded-full h-1 mt-1">
+                              <div 
+                                className="bg-blue-500 h-1 rounded-full"
+                                style={{ width: `${workflow.completionPercentage}%` }}
+                              ></div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
 
