@@ -11,8 +11,16 @@ import {
   Clock, 
   AlertCircle,
   ChevronRight,
-  ChevronDown 
+  ChevronDown,
+  Download,
+  Eye
 } from 'lucide-react';
+
+interface GeneratedDocument {
+  name: string;
+  type: 'form' | 'letter' | 'certificate';
+  generated: boolean;
+}
 
 interface WorkflowStep {
   id: string;
@@ -22,6 +30,7 @@ interface WorkflowStep {
   estimatedDays: number;
   documents?: string[];
   forms?: string[];
+  generatedDocuments?: GeneratedDocument[];
   dependencies?: string[];
   assignedTo: string;
 }
@@ -34,6 +43,9 @@ const h1bTransferWorkflow: WorkflowStep[] = [
     status: 'completed',
     estimatedDays: 2,
     documents: ['Current H1B approval notice', 'Passport copy', 'Current paystubs'],
+    generatedDocuments: [
+      { name: 'Eligibility Assessment Report', type: 'letter', generated: true }
+    ],
     assignedTo: 'Immigration Team'
   },
   {
@@ -43,6 +55,10 @@ const h1bTransferWorkflow: WorkflowStep[] = [
     status: 'completed',
     estimatedDays: 3,
     documents: ['Job description', 'Organizational chart', 'Position requirements'],
+    generatedDocuments: [
+      { name: 'Position Classification Letter', type: 'letter', generated: true },
+      { name: 'Job Analysis Summary', type: 'letter', generated: true }
+    ],
     assignedTo: 'HR Department'
   },
   {
@@ -53,6 +69,10 @@ const h1bTransferWorkflow: WorkflowStep[] = [
     estimatedDays: 7,
     forms: ['Form ETA-9035/9035E'],
     documents: ['Prevailing wage determination', 'Public access file'],
+    generatedDocuments: [
+      { name: 'LCA Filing Confirmation', type: 'certificate', generated: false },
+      { name: 'Prevailing Wage Request Letter', type: 'letter', generated: true }
+    ],
     dependencies: ['job-analysis'],
     assignedTo: 'Legal Team'
   },
@@ -69,6 +89,10 @@ const h1bTransferWorkflow: WorkflowStep[] = [
       'Employment verification letter',
       'Company financial documents'
     ],
+    generatedDocuments: [
+      { name: 'Employer Support Letter', type: 'letter', generated: false },
+      { name: 'Document Checklist', type: 'form', generated: false }
+    ],
     dependencies: ['lca-filing'],
     assignedTo: 'Immigration Team'
   },
@@ -79,6 +103,10 @@ const h1bTransferWorkflow: WorkflowStep[] = [
     status: 'pending',
     estimatedDays: 1,
     forms: ['Form I-129', 'H-1B Data Collection Supplement'],
+    generatedDocuments: [
+      { name: 'I-129 Filing Receipt', type: 'certificate', generated: false },
+      { name: 'Cover Letter to USCIS', type: 'letter', generated: false }
+    ],
     dependencies: ['document-prep'],
     assignedTo: 'Legal Team'
   },
@@ -88,6 +116,9 @@ const h1bTransferWorkflow: WorkflowStep[] = [
     description: 'Wait for USCIS adjudication of the H1B transfer petition',
     status: 'pending',
     estimatedDays: 90,
+    generatedDocuments: [
+      { name: 'Case Status Updates', type: 'letter', generated: false }
+    ],
     dependencies: ['i129-filing'],
     assignedTo: 'USCIS'
   },
@@ -98,6 +129,10 @@ const h1bTransferWorkflow: WorkflowStep[] = [
     status: 'pending',
     estimatedDays: 2,
     documents: ['I-797 approval notice', 'Updated I-94 record'],
+    generatedDocuments: [
+      { name: 'Work Authorization Letter', type: 'letter', generated: false },
+      { name: 'Onboarding Instructions', type: 'form', generated: false }
+    ],
     dependencies: ['uscis-processing'],
     assignedTo: 'HR Department'
   }
@@ -144,12 +179,79 @@ const H1BWorkflow = () => {
     );
   };
 
+  const handlePreviewDocument = (docName: string) => {
+    console.log(`Previewing document: ${docName}`);
+    // Implementation for document preview
+  };
+
+  const handleDownloadDocument = (docName: string) => {
+    console.log(`Downloading document: ${docName}`);
+    // Implementation for document download
+  };
+
   const completedSteps = h1bTransferWorkflow.filter(step => step.status === 'completed').length;
   const totalSteps = h1bTransferWorkflow.length;
   const progressPercentage = (completedSteps / totalSteps) * 100;
 
+  // Calculate dates
+  const startDate = new Date('2024-01-15');
+  const lastUpdated = new Date('2024-02-10');
+  const estimatedCompletion = new Date('2024-05-15');
+
   return (
     <div className="space-y-6">
+      {/* General Information Section */}
+      <Card className="bg-warm-card border border-gray-200">
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-gray-900">
+            Workflow Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center text-gray-600">
+                <Calendar className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Workflow Start Date</span>
+              </div>
+              <p className="text-lg font-semibold text-gray-900">
+                {startDate.toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center text-gray-600">
+                <Clock className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Last Updated</span>
+              </div>
+              <p className="text-lg font-semibold text-gray-900">
+                {lastUpdated.toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center text-gray-600">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Estimated Completion</span>
+              </div>
+              <p className="text-lg font-semibold text-gray-900">
+                {estimatedCompletion.toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                })}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Workflow Header */}
       <Card className="bg-warm-card border border-gray-200">
         <CardHeader>
@@ -282,6 +384,62 @@ const H1BWorkflow = () => {
                         )}
                       </div>
 
+                      {/* Generated Documents */}
+                      {step.generatedDocuments && step.generatedDocuments.length > 0 && (
+                        <div className="mt-4">
+                          <h4 className="font-medium text-gray-900 mb-2 flex items-center">
+                            <FileText className="w-4 h-4 mr-1" />
+                            Generated Documents
+                          </h4>
+                          <div className="space-y-2">
+                            {step.generatedDocuments.map((doc, idx) => (
+                              <div 
+                                key={idx} 
+                                className={`flex items-center justify-between p-3 rounded-lg border ${
+                                  doc.generated 
+                                    ? 'bg-white border-gray-200' 
+                                    : 'bg-gray-50 border-gray-150 text-gray-400'
+                                }`}
+                              >
+                                <div className="flex items-center space-x-2">
+                                  <FileText className={`w-4 h-4 ${doc.generated ? 'text-blue-500' : 'text-gray-400'}`} />
+                                  <span className={`text-sm ${doc.generated ? 'text-gray-900' : 'text-gray-400'}`}>
+                                    {doc.name}
+                                  </span>
+                                  <Badge 
+                                    variant="outline" 
+                                    className={`text-xs ${doc.generated ? 'text-blue-600' : 'text-gray-400'}`}
+                                  >
+                                    {doc.type}
+                                  </Badge>
+                                </div>
+                                {doc.generated && (
+                                  <div className="flex space-x-2">
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handlePreviewDocument(doc.name)}
+                                      className="text-xs"
+                                    >
+                                      <Eye className="w-3 h-3 mr-1" />
+                                      Preview
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      onClick={() => handleDownloadDocument(doc.name)}
+                                      className="text-xs"
+                                    >
+                                      <Download className="w-3 h-3 mr-1" />
+                                      Download
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
                       {step.dependencies && step.dependencies.length > 0 && (
                         <div className="mt-3">
                           <h4 className="font-medium text-gray-900 mb-2">Dependencies</h4>
@@ -338,7 +496,7 @@ const H1BWorkflow = () => {
             </div>
             <div className="text-center p-4 bg-muted-blue rounded-lg">
               <div className="text-2xl font-bold text-gray-900">
-                {h1bTransferWorkflow.filter(s => s.status === 'pending').reduce((sum, step) => sum + step.estimatedDays, 0)}
+                {h1bTransferWorkflow.filter(s => s.status === 'pending').reduce((sum, step) => step.estimatedDays, 0)}
               </div>
               <div className="text-sm text-gray-600">Days Remaining</div>
             </div>
