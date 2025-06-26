@@ -18,11 +18,21 @@ import {
   SelectTrigger, 
   SelectValue 
 } from '@/components/ui/select';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface VisaWorkflow {
   id: string;
   employeeName: string;
   visaType: string;
+  action: string;
   status: 'draft' | 'in-progress' | 'under-review' | 'approved' | 'rejected';
   priority: 'low' | 'medium' | 'high';
   createdDate: string;
@@ -35,6 +45,7 @@ const dummyWorkflows: VisaWorkflow[] = [
     id: '1',
     employeeName: 'Sarah Johnson',
     visaType: 'H-1B',
+    action: 'Amendment',
     status: 'in-progress',
     priority: 'high',
     createdDate: '2024-01-15',
@@ -45,6 +56,7 @@ const dummyWorkflows: VisaWorkflow[] = [
     id: '2',
     employeeName: 'Miguel Rodriguez',
     visaType: 'L-1A',
+    action: 'New Application',
     status: 'under-review',
     priority: 'medium',
     createdDate: '2024-01-20',
@@ -55,6 +67,7 @@ const dummyWorkflows: VisaWorkflow[] = [
     id: '3',
     employeeName: 'Priya Patel',
     visaType: 'O-1',
+    action: 'Transfer',
     status: 'approved',
     priority: 'low',
     createdDate: '2024-01-10',
@@ -65,6 +78,7 @@ const dummyWorkflows: VisaWorkflow[] = [
     id: '4',
     employeeName: 'Chen Wei',
     visaType: 'E-2',
+    action: 'Renewal',
     status: 'draft',
     priority: 'medium',
     createdDate: '2024-01-25',
@@ -94,7 +108,9 @@ const getVisaTypeIcon = (visaType: string) => {
     'H-1B': { bg: 'bg-muted-blue', shape: 'w-6 h-6 bg-blue-500 rounded' },
     'L-1A': { bg: 'bg-soft-orange', shape: 'w-6 h-6 bg-orange-500 rounded-full' },
     'O-1': { bg: 'bg-sage', shape: 'w-6 h-6 bg-green-500 rounded' },
-    'E-2': { bg: 'bg-warm-purple', shape: 'w-6 h-6 bg-purple-500 rounded-full' }
+    'E-2': { bg: 'bg-warm-purple', shape: 'w-6 h-6 bg-purple-500 rounded-full' },
+    'H-1B1': { bg: 'bg-muted-blue', shape: 'w-6 h-6 bg-blue-600 rounded' },
+    'L-1': { bg: 'bg-soft-orange', shape: 'w-6 h-6 bg-orange-600 rounded-full' }
   };
 
   const config = iconConfigs[visaType as keyof typeof iconConfigs] || iconConfigs['H-1B'];
@@ -110,6 +126,12 @@ const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [visaTypeFilter, setVisaTypeFilter] = useState('all');
+  const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
+  const [newWorkflow, setNewWorkflow] = useState({
+    employeeName: '',
+    visaType: '',
+    action: ''
+  });
 
   const stats = {
     current: dummyWorkflows.filter(w => w.status === 'in-progress' || w.status === 'draft').length,
@@ -130,6 +152,12 @@ const Dashboard = () => {
   });
 
   const uniqueVisaTypes = [...new Set(dummyWorkflows.map(w => w.visaType))];
+
+  const handleCreateWorkflow = () => {
+    console.log('Creating new workflow:', newWorkflow);
+    setShowNewWorkflowDialog(false);
+    setNewWorkflow({ employeeName: '', visaType: '', action: '' });
+  };
 
   return (
     <div className="min-h-screen bg-warm">
@@ -179,9 +207,6 @@ const Dashboard = () => {
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">Welcome back, Julia</h1>
             <p className="text-sm text-gray-500">PROJECT SUMMARIES SINCE DEC 10, 2022</p>
           </div>
-          <div className="text-right">
-            <Button variant="outline" className="text-sm">New Visa Workflow</Button>
-          </div>
         </div>
 
         {/* Stats Cards */}
@@ -222,6 +247,67 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-gray-900">Visa Workflows</h2>
               <p className="text-sm text-gray-500 mt-1">UPDATED: {new Date().toLocaleDateString().toUpperCase()}</p>
             </div>
+            <Dialog open={showNewWorkflowDialog} onOpenChange={setShowNewWorkflowDialog}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="text-sm">
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Visa Workflow
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-white">
+                <DialogHeader>
+                  <DialogTitle>Create New Visa Workflow</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label htmlFor="employeeName">Employee Name</Label>
+                    <Input
+                      id="employeeName"
+                      value={newWorkflow.employeeName}
+                      onChange={(e) => setNewWorkflow({ ...newWorkflow, employeeName: e.target.value })}
+                      placeholder="Enter employee name"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="visaType">Visa Type</Label>
+                    <Select onValueChange={(value) => setNewWorkflow({ ...newWorkflow, visaType: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select visa type" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="H-1B">H-1B</SelectItem>
+                        <SelectItem value="L-1">L-1</SelectItem>
+                        <SelectItem value="H-1B1">H-1B1</SelectItem>
+                        <SelectItem value="O-1">O-1</SelectItem>
+                        <SelectItem value="E-2">E-2</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="action">Action</Label>
+                    <Select onValueChange={(value) => setNewWorkflow({ ...newWorkflow, action: value })}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select action" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="Renewal">Renewal</SelectItem>
+                        <SelectItem value="New Application">New Application</SelectItem>
+                        <SelectItem value="Transfer">Transfer</SelectItem>
+                        <SelectItem value="Amendment">Amendment</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex justify-end space-x-2 pt-4">
+                    <Button variant="outline" onClick={() => setShowNewWorkflowDialog(false)}>
+                      Cancel
+                    </Button>
+                    <Button onClick={handleCreateWorkflow}>
+                      Create Workflow
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
 
           {/* Search and Filters */}
@@ -268,7 +354,7 @@ const Dashboard = () => {
             {filteredWorkflows.map((workflow) => (
               <Card key={workflow.id} className="bg-warm-card border border-gray-200 hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
-                  <div className="flex items-start space-x-4">
+                  <div className="flex items-center space-x-4">
                     {getVisaTypeIcon(workflow.visaType)}
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
@@ -280,12 +366,12 @@ const Dashboard = () => {
                         </Link>
                         {getStatusBadge(workflow.status)}
                       </div>
-                      <p className="text-sm text-gray-500 mb-3">{workflow.visaType} Visa</p>
+                      <p className="text-sm text-gray-500 mb-3">{workflow.visaType} - {workflow.action}</p>
                       
                       <div className="flex items-center justify-between text-sm text-gray-500">
                         <div className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
-                          Next Start: {new Date(workflow.nextStartDate).toLocaleDateString()}
+                          Start: {new Date(workflow.nextStartDate).toLocaleDateString()}
                         </div>
                         <div className="text-right">
                           <div className="text-sm font-medium">{workflow.completionPercentage}%</div>
