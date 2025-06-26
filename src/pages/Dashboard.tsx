@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, FileText, Clock, CheckCircle, AlertCircle, Users, Calendar, Search, Settings, LogOut, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -207,7 +206,6 @@ const Dashboard = () => {
         <div className="flex justify-between items-start mb-8">
           <div>
             <h1 className="text-3xl font-semibold text-gray-900 mb-2">Welcome back, Julia</h1>
-            <p className="text-sm text-gray-500">PROJECT SUMMARIES SINCE DEC 10, 2022</p>
           </div>
         </div>
 
@@ -247,7 +245,6 @@ const Dashboard = () => {
           <div className="flex justify-between items-center mb-6">
             <div>
               <h2 className="text-xl font-semibold text-gray-900">Visa Workflows</h2>
-              <p className="text-sm text-gray-500 mt-1">UPDATED: {new Date().toLocaleDateString().toUpperCase()}</p>
             </div>
             <Dialog open={showNewWorkflowDialog} onOpenChange={setShowNewWorkflowDialog}>
               <DialogTrigger asChild>
