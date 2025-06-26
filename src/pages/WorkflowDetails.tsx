@@ -1,8 +1,14 @@
 
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 import H1BWorkflow from '@/components/H1BWorkflow';
 
 const WorkflowDetails = () => {
@@ -23,15 +29,28 @@ const WorkflowDetails = () => {
               </div>
               <nav className="hidden md:flex space-x-8">
                 <Link to="/dashboard" className="text-gray-900 font-medium border-b-2 border-gray-900 pb-4">Dashboard</Link>
-                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">Analytics</a>
-                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">Reports</a>
-                <Link to="/settings" className="text-gray-500 hover:text-gray-900 pb-4">Settings</Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer">
-                <span className="text-gray-600 text-sm font-medium">JD</span>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-400 transition-colors">
+                    <span className="text-gray-600 text-sm font-medium">JD</span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-white">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Link to="/settings" className="flex items-center w-full">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

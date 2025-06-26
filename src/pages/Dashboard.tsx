@@ -26,6 +26,14 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 interface VisaWorkflow {
   id: string;
@@ -126,11 +134,14 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [visaTypeFilter, setVisaTypeFilter] = useState('all');
   const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const [newWorkflow, setNewWorkflow] = useState({
     employeeEmail: '',
     visaType: '',
     action: ''
   });
+
+  const itemsPerPage = 5;
 
   const stats = {
     current: dummyWorkflows.filter(w => w.status === 'in-progress' || w.status === 'draft').length,
@@ -150,12 +161,20 @@ const Dashboard = () => {
     return matchesSearch && matchesStatus && matchesVisaType;
   });
 
+  const totalPages = Math.ceil(filteredWorkflows.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedWorkflows = filteredWorkflows.slice(startIndex, startIndex + itemsPerPage);
+
   const uniqueVisaTypes = [...new Set(dummyWorkflows.map(w => w.visaType))];
 
   const handleCreateWorkflow = () => {
     console.log('Creating new workflow:', newWorkflow);
     setShowNewWorkflowDialog(false);
     setNewWorkflow({ employeeEmail: '', visaType: '', action: '' });
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   return (
@@ -350,8 +369,8 @@ const Dashboard = () => {
           </div>
 
           {/* Visa Workflows */}
-          <div className="space-y-4">
-            {filteredWorkflows.map((workflow) => (
+          <div className="space-y-4 mb-6">
+            {paginatedWorkflows.map((workflow) => (
               <Card key={workflow.id} className="bg-warm-card border border-gray-200 hover:shadow-md transition-shadow">
                 <CardContent className="p-4">
                   <div className="flex items-center space-x-4">
@@ -389,6 +408,48 @@ const Dashboard = () => {
               </Card>
             ))}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) handlePageChange(currentPage - 1);
+                    }}
+                    className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handlePageChange(page);
+                      }}
+                      isActive={currentPage === page}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                    }}
+                    className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
       </main>
     </div>
