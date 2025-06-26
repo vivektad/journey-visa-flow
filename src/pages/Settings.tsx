@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -88,6 +87,16 @@ const Settings = () => {
     userRole: 'Employee' // Lawyer, Employee, HR Team
   });
 
+  // User management state
+  const [users, setUsers] = useState([
+    { id: '1', name: 'Julia Doe', email: 'julia.doe@company.com', role: 'Employee', status: 'Active' },
+    { id: '2', name: 'John Smith', email: 'john.smith@acmecorp.com', role: 'HR Team', status: 'Active' },
+    { id: '3', name: 'Sarah Wilson', email: 'sarah.wilson@acmecorp.com', role: 'Lawyer', status: 'Pending' }
+  ]);
+
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState('Employee');
+
   // Collapsible states
   const [companyInfoOpen, setCompanyInfoOpen] = useState(false);
   const [contactInfoOpen, setContactInfoOpen] = useState(false);
@@ -168,6 +177,27 @@ const Settings = () => {
     // Add toast notification here
   };
 
+  const handleInviteUser = () => {
+    if (inviteEmail) {
+      const newUser = {
+        id: Date.now().toString(),
+        name: inviteEmail.split('@')[0],
+        email: inviteEmail,
+        role: inviteRole,
+        status: 'Pending'
+      };
+      setUsers([...users, newUser]);
+      setInviteEmail('');
+      setInviteRole('Employee');
+      console.log('Inviting user:', newUser);
+    }
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    setUsers(users.filter(user => user.id !== userId));
+    console.log('Deleting user:', userId);
+  };
+
   return (
     <div className="min-h-screen bg-warm">
       {/* Header */}
@@ -195,7 +225,7 @@ const Settings = () => {
         </div>
 
         <div className="space-y-8">
-          {/* Personal Settings (now includes employee information) */}
+          {/* Personal Settings (now includes employee information and user role) */}
           <PersonalSettings
             settings={personalSettings}
             employeeDetails={employeeDetails}
@@ -219,16 +249,22 @@ const Settings = () => {
             addEmploymentEntry={addEmploymentEntry}
             removeEmploymentEntry={removeEmploymentEntry}
             accountManagement={accountManagement}
+            setAccountManagement={setAccountManagement}
+            users={users}
+            onInviteUser={handleInviteUser}
+            onDeleteUser={handleDeleteUser}
+            inviteEmail={inviteEmail}
+            setInviteEmail={setInviteEmail}
+            inviteRole={inviteRole}
+            setInviteRole={setInviteRole}
           />
 
-          {/* Instance Settings */}
+          {/* Instance Settings (user role removed) */}
           <InstanceSettings
             instanceSettings={instanceSettings}
             companyDetails={companyDetails}
-            accountManagement={accountManagement}
             onInstanceChange={handleInstanceChange}
             onCompanyChange={handleCompanyChange}
-            setAccountManagement={setAccountManagement}
             onSave={handleSaveInstance}
             companyInfoOpen={companyInfoOpen}
             setCompanyInfoOpen={setCompanyInfoOpen}

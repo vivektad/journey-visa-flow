@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Building, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +12,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 interface InstanceSettingsProps {
   instanceSettings: any;
   companyDetails: any;
-  accountManagement: any;
   onInstanceChange: (field: string, value: any) => void;
   onCompanyChange: (field: string, value: any) => void;
-  setAccountManagement: (value: any) => void;
   onSave: () => void;
   companyInfoOpen: boolean;
   setCompanyInfoOpen: (open: boolean) => void;
@@ -27,10 +24,8 @@ interface InstanceSettingsProps {
 const InstanceSettings: React.FC<InstanceSettingsProps> = ({
   instanceSettings,
   companyDetails,
-  accountManagement,
   onInstanceChange,
   onCompanyChange,
-  setAccountManagement,
   onSave,
   companyInfoOpen,
   setCompanyInfoOpen,
@@ -46,26 +41,6 @@ const InstanceSettings: React.FC<InstanceSettingsProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Account Management */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Account Management</h3>
-          <div>
-            <Label htmlFor="userRole">User Role</Label>
-            <Select value={accountManagement.userRole} onValueChange={(value) => setAccountManagement(prev => ({ ...prev, userRole: value }))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-white">
-                <SelectItem value="Lawyer">Lawyer</SelectItem>
-                <SelectItem value="Employee">Employee</SelectItem>
-                <SelectItem value="HR Team">HR Team</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <Separator />
-
         {/* Company Information */}
         <Collapsible open={companyInfoOpen} onOpenChange={setCompanyInfoOpen}>
           <CollapsibleTrigger className="flex items-center justify-between w-full p-4 bg-gray-50 rounded-lg hover:bg-gray-100">

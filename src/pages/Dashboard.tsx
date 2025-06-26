@@ -91,6 +91,28 @@ const dummyWorkflows: VisaWorkflow[] = [
     createdDate: '2024-01-25',
     nextStartDate: '2024-03-01',
     completionPercentage: 25
+  },
+  {
+    id: '5',
+    employeeName: 'James Thompson',
+    visaType: 'H-1B1',
+    action: 'New Application',
+    status: 'in-progress',
+    priority: 'high',
+    createdDate: '2024-01-28',
+    nextStartDate: '2024-03-05',
+    completionPercentage: 45
+  },
+  {
+    id: '6',
+    employeeName: 'Anna Kowalski',
+    visaType: 'L-1',
+    action: 'Transfer',
+    status: 'under-review',
+    priority: 'medium',
+    createdDate: '2024-01-30',
+    nextStartDate: '2024-03-10',
+    completionPercentage: 70
   }
 ];
 
