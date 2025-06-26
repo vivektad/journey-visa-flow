@@ -10,6 +10,7 @@ import WorkflowDetails from "./pages/WorkflowDetails";
 import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import CompanyOnboarding from "./pages/CompanyOnboarding";
+import EmployeeOnboarding from "./pages/EmployeeOnboarding";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/onboarding" element={<CompanyOnboarding />} />
+          <Route path="/employee-onboarding" element={<EmployeeOnboarding />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/workflow/:id" element={<WorkflowDetails />} />
