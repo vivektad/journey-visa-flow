@@ -128,7 +128,7 @@ const Dashboard = () => {
   const [visaTypeFilter, setVisaTypeFilter] = useState('all');
   const [showNewWorkflowDialog, setShowNewWorkflowDialog] = useState(false);
   const [newWorkflow, setNewWorkflow] = useState({
-    employeeName: '',
+    employeeEmail: '',
     visaType: '',
     action: ''
   });
@@ -156,7 +156,7 @@ const Dashboard = () => {
   const handleCreateWorkflow = () => {
     console.log('Creating new workflow:', newWorkflow);
     setShowNewWorkflowDialog(false);
-    setNewWorkflow({ employeeName: '', visaType: '', action: '' });
+    setNewWorkflow({ employeeEmail: '', visaType: '', action: '' });
   };
 
   return (
@@ -185,8 +185,10 @@ const Dashboard = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-white">
                   <DropdownMenuItem className="cursor-pointer">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Settings
+                    <Link to="/settings" className="flex items-center w-full">
+                      <Settings className="w-4 h-4 mr-2" />
+                      Settings
+                    </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer">
                     <LogOut className="w-4 h-4 mr-2" />
@@ -260,12 +262,13 @@ const Dashboard = () => {
                 </DialogHeader>
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="employeeName">Employee Name</Label>
+                    <Label htmlFor="employeeEmail">Employee Email</Label>
                     <Input
-                      id="employeeName"
-                      value={newWorkflow.employeeName}
-                      onChange={(e) => setNewWorkflow({ ...newWorkflow, employeeName: e.target.value })}
-                      placeholder="Enter employee name"
+                      id="employeeEmail"
+                      type="email"
+                      value={newWorkflow.employeeEmail}
+                      onChange={(e) => setNewWorkflow({ ...newWorkflow, employeeEmail: e.target.value })}
+                      placeholder="Enter employee email"
                     />
                   </div>
                   <div>
