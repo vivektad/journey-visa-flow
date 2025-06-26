@@ -10,7 +10,7 @@ const WorkflowDetails = () => {
 
   return (
     <div className="min-h-screen bg-warm">
-      {/* Header */}
+      {/* Header - Match Dashboard Header */}
       <header className="bg-warm-card border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -24,7 +24,7 @@ const WorkflowDetails = () => {
               <nav className="hidden md:flex space-x-8">
                 <Link to="/dashboard" className="text-gray-500 hover:text-gray-900 pb-4">Dashboard</Link>
                 <a href="#" className="text-gray-900 font-medium border-b-2 border-gray-900 pb-4">Workflow Details</a>
-                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">My Projects</a>
+                <Link to="/settings" className="text-gray-500 hover:text-gray-900 pb-4">Settings</Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">

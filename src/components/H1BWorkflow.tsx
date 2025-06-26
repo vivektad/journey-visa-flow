@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +12,9 @@ import {
   ChevronRight,
   ChevronDown,
   Download,
-  Eye
+  Eye,
+  User,
+  Briefcase
 } from 'lucide-react';
 
 interface GeneratedDocument {
@@ -208,7 +209,35 @@ const H1BWorkflow = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Applicant Info */}
+          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center text-gray-600">
+                  <User className="w-4 h-4 mr-2" />
+                  <span className="text-sm font-medium">Applicant</span>
+                </div>
+                <p className="text-lg font-semibold text-gray-900">Sarah Johnson</p>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center text-gray-600">
+                  <FileText className="w-4 h-4 mr-2" />
+                  <span className="text-sm font-medium">Visa Type</span>
+                </div>
+                <p className="text-lg font-semibold text-gray-900">H-1B</p>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center text-gray-600">
+                  <Briefcase className="w-4 h-4 mr-2" />
+                  <span className="text-sm font-medium">Action</span>
+                </div>
+                <p className="text-lg font-semibold text-gray-900">Transfer</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Dates */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
             <div className="space-y-2">
               <div className="flex items-center text-gray-600">
                 <Calendar className="w-4 h-4 mr-2" />
@@ -247,6 +276,18 @@ const H1BWorkflow = () => {
                   day: 'numeric' 
                 })}
               </p>
+            </div>
+          </div>
+
+          {/* Assigned Lawyer */}
+          <div className="pt-4 border-t border-gray-200">
+            <div className="space-y-2">
+              <div className="flex items-center text-gray-600">
+                <Users className="w-4 h-4 mr-2" />
+                <span className="text-sm font-medium">Assigned Lawyer</span>
+              </div>
+              <p className="text-lg font-semibold text-gray-900">Michael Chen, Esq.</p>
+              <p className="text-sm text-gray-600">Immigration Attorney • chen@lawfirm.com • (555) 123-9876</p>
             </div>
           </div>
         </CardContent>

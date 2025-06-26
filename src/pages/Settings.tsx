@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import PersonalSettings from '@/components/settings/PersonalSettings';
-import EmployeeInformation from '@/components/settings/EmployeeInformation';
 import InstanceSettings from '@/components/settings/InstanceSettings';
 
 const Settings = () => {
@@ -44,9 +43,7 @@ const Settings = () => {
 
   // Employee specific fields (if user is an employee)
   const [employeeDetails, setEmployeeDetails] = useState({
-    firstName: 'Julia',
     middleName: '',
-    lastName: 'Doe',
     dateOfBirth: '1990-01-15',
     placeOfBirth: 'New York, USA',
     passportNumber: 'A12345678',
@@ -162,17 +159,12 @@ const Settings = () => {
   };
 
   const handleSavePersonal = () => {
-    console.log('Saving personal settings:', personalSettings);
+    console.log('Saving personal settings:', { personalSettings, employeeDetails });
     // Add toast notification here
   };
 
   const handleSaveInstance = () => {
     console.log('Saving instance settings:', { instanceSettings, companyDetails, accountManagement });
-    // Add toast notification here
-  };
-
-  const handleSaveEmployee = () => {
-    console.log('Saving employee details:', employeeDetails);
     // Add toast notification here
   };
 
@@ -199,41 +191,35 @@ const Settings = () => {
       <main className="max-w-4xl mx-auto px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">Settings</h1>
-          <p className="text-gray-500">Manage your personal, employee, and instance settings</p>
+          <p className="text-gray-500">Manage your personal and instance settings</p>
         </div>
 
         <div className="space-y-8">
-          {/* Personal Settings */}
+          {/* Personal Settings (now includes employee information) */}
           <PersonalSettings
             settings={personalSettings}
+            employeeDetails={employeeDetails}
             onSettingsChange={handlePersonalChange}
+            onEmployeeChange={handleEmployeeChange}
             onSave={handleSavePersonal}
+            personalInfoOpen={personalInfoOpen}
+            setPersonalInfoOpen={setPersonalInfoOpen}
+            passportInfoOpen={passportInfoOpen}
+            setPassportInfoOpen={setPassportInfoOpen}
+            addressInfoOpen={addressInfoOpen}
+            setAddressInfoOpen={setAddressInfoOpen}
+            visaInfoOpen={visaInfoOpen}
+            setVisaInfoOpen={setVisaInfoOpen}
+            educationOpen={educationOpen}
+            setEducationOpen={setEducationOpen}
+            employmentOpen={employmentOpen}
+            setEmploymentOpen={setEmploymentOpen}
+            addEducationEntry={addEducationEntry}
+            removeEducationEntry={removeEducationEntry}
+            addEmploymentEntry={addEmploymentEntry}
+            removeEmploymentEntry={removeEmploymentEntry}
+            accountManagement={accountManagement}
           />
-
-          {/* Employee Details (only show if user is an employee) */}
-          {accountManagement.userRole === 'Employee' && (
-            <EmployeeInformation
-              employeeDetails={employeeDetails}
-              onEmployeeChange={handleEmployeeChange}
-              onSave={handleSaveEmployee}
-              personalInfoOpen={personalInfoOpen}
-              setPersonalInfoOpen={setPersonalInfoOpen}
-              passportInfoOpen={passportInfoOpen}
-              setPassportInfoOpen={setPassportInfoOpen}
-              addressInfoOpen={addressInfoOpen}
-              setAddressInfoOpen={setAddressInfoOpen}
-              visaInfoOpen={visaInfoOpen}
-              setVisaInfoOpen={setVisaInfoOpen}
-              educationOpen={educationOpen}
-              setEducationOpen={setEducationOpen}
-              employmentOpen={employmentOpen}
-              setEmploymentOpen={setEmploymentOpen}
-              addEducationEntry={addEducationEntry}
-              removeEducationEntry={removeEducationEntry}
-              addEmploymentEntry={addEmploymentEntry}
-              removeEmploymentEntry={removeEmploymentEntry}
-            />
-          )}
 
           {/* Instance Settings */}
           <InstanceSettings
