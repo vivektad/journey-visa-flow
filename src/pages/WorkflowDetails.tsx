@@ -10,7 +10,7 @@ const WorkflowDetails = () => {
 
   return (
     <div className="min-h-screen bg-warm">
-      {/* Header - Match Dashboard Header */}
+      {/* Header - Match Dashboard Header exactly */}
       <header className="bg-warm-card border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -22,24 +22,14 @@ const WorkflowDetails = () => {
                 <span className="text-lg font-medium text-gray-900">VisaFlow</span>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Link to="/dashboard" className="text-gray-500 hover:text-gray-900 pb-4">Dashboard</Link>
-                <a href="#" className="text-gray-900 font-medium border-b-2 border-gray-900 pb-4">Workflow Details</a>
+                <Link to="/dashboard" className="text-gray-900 font-medium border-b-2 border-gray-900 pb-4">Dashboard</Link>
+                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">Analytics</a>
+                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">Reports</a>
                 <Link to="/settings" className="text-gray-500 hover:text-gray-900 pb-4">Settings</Link>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search" 
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                />
-              </div>
-              <Button className="bg-gray-900 hover:bg-gray-800 text-white rounded-lg px-4 py-2">
-                New Project
-              </Button>
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer">
                 <span className="text-gray-600 text-sm font-medium">JD</span>
               </div>
             </div>

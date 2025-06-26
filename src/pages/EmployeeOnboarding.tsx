@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,45 +6,49 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
-import { ChevronRight, ChevronLeft, Plus, Trash2 } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Plus, Trash2, Upload } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const EmployeeOnboarding = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 6;
+  const totalSteps = 5;
 
   const [formData, setFormData] = useState({
-    // Section 1: Personal Information
+    // Section 1: Personal Information & Passport
+    passportFile: null,
     firstName: '',
     middleName: '',
     lastName: '',
     dateOfBirth: '',
     placeOfBirth: '',
-    
-    // Section 2: Passport Information
     passportNumber: '',
     passportIssueDate: '',
     passportExpiryDate: '',
     
-    // Section 3: Contact Information
+    // Section 2: Contact Information
     homePhoneNumber: '',
     workPhoneNumber: '',
-    
-    // Section 4: Location Information
     currentlyInUS: false,
     currentUSAddress: '',
     foreignAddress: '',
     
-    // Section 5: Visa Information
+    // Section 3: Visa Information
     currentVisaType: 'None',
+    visaNumber: '',
     visaExpirationDate: '',
+    currentVisaStamps: null,
+    currentI797: null,
+    currentI94: null,
     hasPreviousUSVisas: false,
+    previousVisaStamps: null,
+    previousI797: null,
     previousVisaType: '',
     previousVisaNumber: '',
     previousVisaExpirationDate: '',
     
-    // Section 6: Education and Employment History
+    // Section 4: Education and Employment History
+    resumeFile: null,
     educationHistory: [
       {
         institutionName: '',
@@ -72,6 +75,10 @@ const EmployeeOnboarding = () => {
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleFileUpload = (field: string, file: File | null) => {
+    setFormData(prev => ({ ...prev, [field]: file }));
   };
 
   const addEducationEntry = () => {
@@ -135,12 +142,52 @@ const EmployeeOnboarding = () => {
     navigate('/dashboard');
   };
 
+  const FileUploadField = ({ label, field, accept = "*/*", required = false }: { label: string, field: string, accept?: string, required?: boolean }) => (
+    <div>
+      <Label htmlFor={field}>{label} {required && '*'}</Label>
+      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+        <div className="space-y-1 text-center">
+          <Upload className="mx-auto h-12 w-12 text-gray-400" />
+          <div className="flex text-sm text-gray-600">
+            <label
+              htmlFor={field}
+              className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500"
+            >
+              <span>Upload a file</span>
+              <input
+                id={field}
+                name={field}
+                type="file"
+                className="sr-only"
+                accept={accept}
+                onChange={(e) => handleFileUpload(field, e.target.files?.[0] || null)}
+                required={required}
+              />
+            </label>
+            <p className="pl-1">or drag and drop</p>
+          </div>
+          <p className="text-xs text-gray-500">
+            {formData[field as keyof typeof formData]?.name || 'No file selected'}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information & Passport</h2>
+            
+            <FileUploadField 
+              label="Passport" 
+              field="passportFile" 
+              accept="image/*,.pdf" 
+              required 
+            />
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="firstName">First Name *</Label>
@@ -169,6 +216,7 @@ const EmployeeOnboarding = () => {
                 />
               </div>
             </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="dateOfBirth">Date of Birth *</Label>
@@ -190,13 +238,9 @@ const EmployeeOnboarding = () => {
                 />
               </div>
             </div>
-          </div>
-        );
 
-      case 2:
-        return (
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Passport Information</h2>
+            <Separator />
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <Label htmlFor="passportNumber">Passport Number *</Label>
@@ -231,7 +275,7 @@ const EmployeeOnboarding = () => {
           </div>
         );
 
-      case 3:
+      case 2:
         return (
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Contact Information</h2>
@@ -289,7 +333,7 @@ const EmployeeOnboarding = () => {
           </div>
         );
 
-      case 4:
+      case 3:
         return (
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Visa Information</h2>
@@ -312,72 +356,109 @@ const EmployeeOnboarding = () => {
             </div>
 
             {formData.currentVisaType !== 'None' && (
-              <>
-                <div>
-                  <Label htmlFor="visaExpirationDate">Visa Expiration Date *</Label>
-                  <Input
-                    id="visaExpirationDate"
-                    type="date"
-                    value={formData.visaExpirationDate}
-                    onChange={(e) => handleInputChange('visaExpirationDate', e.target.value)}
-                    required
-                  />
+              <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-medium text-gray-900">Current Visa Documents</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FileUploadField label="Visa Stamps" field="currentVisaStamps" accept="image/*,.pdf" required />
+                  <FileUploadField label="I-797" field="currentI797" accept="image/*,.pdf" required />
+                  <FileUploadField label="Latest I-94" field="currentI94" accept="image/*,.pdf" required />
                 </div>
-
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    checked={formData.hasPreviousUSVisas}
-                    onCheckedChange={(checked) => handleInputChange('hasPreviousUSVisas', checked)}
-                  />
-                  <Label>Have you had previous US Visas?</Label>
-                </div>
-
-                {formData.hasPreviousUSVisas && (
-                  <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-                    <h3 className="font-medium text-gray-900">Previous Visa Details</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <Label htmlFor="previousVisaType">Previous Visa Type *</Label>
-                        <Input
-                          id="previousVisaType"
-                          value={formData.previousVisaType}
-                          onChange={(e) => handleInputChange('previousVisaType', e.target.value)}
-                          required={formData.hasPreviousUSVisas}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="previousVisaNumber">Previous Visa Number *</Label>
-                        <Input
-                          id="previousVisaNumber"
-                          value={formData.previousVisaNumber}
-                          onChange={(e) => handleInputChange('previousVisaNumber', e.target.value)}
-                          required={formData.hasPreviousUSVisas}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="previousVisaExpirationDate">Previous Visa Expiration Date *</Label>
-                        <Input
-                          id="previousVisaExpirationDate"
-                          type="date"
-                          value={formData.previousVisaExpirationDate}
-                          onChange={(e) => handleInputChange('previousVisaExpirationDate', e.target.value)}
-                          required={formData.hasPreviousUSVisas}
-                        />
-                      </div>
-                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="visaNumber">Visa Number *</Label>
+                    <Input
+                      id="visaNumber"
+                      value={formData.visaNumber}
+                      onChange={(e) => handleInputChange('visaNumber', e.target.value)}
+                      required
+                    />
                   </div>
-                )}
-              </>
+                  <div>
+                    <Label htmlFor="visaExpirationDate">Visa Expiration Date *</Label>
+                    <Input
+                      id="visaExpirationDate"
+                      type="date"
+                      value={formData.visaExpirationDate}
+                      onChange={(e) => handleInputChange('visaExpirationDate', e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={formData.hasPreviousUSVisas}
+                onCheckedChange={(checked) => handleInputChange('hasPreviousUSVisas', checked)}
+              />
+              <Label>Have you had previous US Visas?</Label>
+            </div>
+
+            {formData.hasPreviousUSVisas && (
+              <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                <h3 className="font-medium text-gray-900">Previous Visa Details</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FileUploadField label="Previous Visa Stamps" field="previousVisaStamps" accept="image/*,.pdf" required />
+                  <FileUploadField label="Previous I-797" field="previousI797" accept="image/*,.pdf" required />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="previousVisaType">Previous Visa Type *</Label>
+                    <Select value={formData.previousVisaType} onValueChange={(value) => handleInputChange('previousVisaType', value)}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="H-1B">H-1B</SelectItem>
+                        <SelectItem value="L-1">L-1</SelectItem>
+                        <SelectItem value="H-1B1">H-1B1</SelectItem>
+                        <SelectItem value="O-1">O-1</SelectItem>
+                        <SelectItem value="F-1">F-1</SelectItem>
+                        <SelectItem value="J-1">J-1</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="previousVisaNumber">Previous Visa Number *</Label>
+                    <Input
+                      id="previousVisaNumber"
+                      value={formData.previousVisaNumber}
+                      onChange={(e) => handleInputChange('previousVisaNumber', e.target.value)}
+                      required={formData.hasPreviousUSVisas}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="previousVisaExpirationDate">Previous Visa Expiration Date *</Label>
+                    <Input
+                      id="previousVisaExpirationDate"
+                      type="date"
+                      value={formData.previousVisaExpirationDate}
+                      onChange={(e) => handleInputChange('previousVisaExpirationDate', e.target.value)}
+                      required={formData.hasPreviousUSVisas}
+                    />
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         );
 
-      case 5:
+      case 4:
         return (
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Education History</h2>
+            
+            <FileUploadField 
+              label="Latest Resume" 
+              field="resumeFile" 
+              accept=".pdf,.doc,.docx" 
+              required 
+            />
+
             {formData.educationHistory.map((education, index) => (
               <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-4">
+                
                 <div className="flex justify-between items-center">
                   <h3 className="font-medium text-gray-900">Education Entry {index + 1}</h3>
                   {formData.educationHistory.length > 1 && (
@@ -491,12 +572,13 @@ const EmployeeOnboarding = () => {
           </div>
         );
 
-      case 6:
+      case 5:
         return (
           <div className="space-y-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Employment History</h2>
             {formData.employmentHistory.map((employment, index) => (
               <div key={index} className="p-4 border border-gray-200 rounded-lg space-y-4">
+                
                 <div className="flex justify-between items-center">
                   <h3 className="font-medium text-gray-900">Employment Entry {index + 1}</h3>
                   {formData.employmentHistory.length > 1 && (
