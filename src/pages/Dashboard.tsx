@@ -1,10 +1,23 @@
 
-import React from 'react';
-import { Plus, FileText, Clock, CheckCircle, AlertCircle, Users, Calendar, Search } from 'lucide-react';
+import React, { useState } from 'react';
+import { Plus, FileText, Clock, CheckCircle, AlertCircle, Users, Calendar, Search, Settings, LogOut, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
 
 interface VisaWorkflow {
   id: string;
@@ -82,12 +95,29 @@ const getStatusBadge = (status: string) => {
 };
 
 const Dashboard = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [visaTypeFilter, setVisaTypeFilter] = useState('all');
+
   const stats = {
     current: dummyWorkflows.filter(w => w.status === 'in-progress' || w.status === 'draft').length,
     inReview: dummyWorkflows.filter(w => w.status === 'under-review').length,
     totalSubmissions: dummyWorkflows.length * 15, // Dummy multiplier for submissions
     collaborators: 43
   };
+
+  const filteredWorkflows = dummyWorkflows.filter(workflow => {
+    const matchesSearch = workflow.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         workflow.visaType.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || 
+                         (statusFilter === 'active' && (workflow.status === 'in-progress' || workflow.status === 'draft')) ||
+                         (statusFilter === 'inactive' && (workflow.status === 'approved' || workflow.status === 'rejected'));
+    const matchesVisaType = visaTypeFilter === 'all' || workflow.visaType === visaTypeFilter;
+    
+    return matchesSearch && matchesStatus && matchesVisaType;
+  });
+
+  const uniqueVisaTypes = [...new Set(dummyWorkflows.map(w => w.visaType))];
 
   return (
     <div className="min-h-screen bg-warm">
@@ -104,25 +134,26 @@ const Dashboard = () => {
               </div>
               <nav className="hidden md:flex space-x-8">
                 <a href="#" className="text-gray-900 font-medium border-b-2 border-gray-900 pb-4">Dashboard</a>
-                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">Explore</a>
-                <a href="#" className="text-gray-500 hover:text-gray-900 pb-4">My Projects</a>
               </nav>
             </div>
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input 
-                  type="text" 
-                  placeholder="Search" 
-                  className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                />
-              </div>
-              <Button className="bg-gray-900 hover:bg-gray-800 text-white rounded-lg px-4 py-2">
-                New Project
-              </Button>
-              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-gray-600 text-sm font-medium">JD</span>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-400 transition-colors">
+                    <span className="text-gray-600 text-sm font-medium">JD</span>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-white">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -137,7 +168,7 @@ const Dashboard = () => {
             <p className="text-sm text-gray-500">PROJECT SUMMARIES SINCE DEC 10, 2022</p>
           </div>
           <div className="text-right">
-            <Button variant="outline" className="text-sm">Edit Profile</Button>
+            <Button variant="outline" className="text-sm">New Visa Workflow</Button>
           </div>
         </div>
 
@@ -177,14 +208,53 @@ const Dashboard = () => {
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Active Workflows</h2>
+                <h2 className="text-xl font-semibold text-gray-900">Visa Workflows</h2>
                 <p className="text-sm text-gray-500 mt-1">UPDATED: {new Date().toLocaleDateString().toUpperCase()}</p>
               </div>
             </div>
 
-            {/* Active Workflows */}
+            {/* Search and Filters */}
+            <div className="mb-6 space-y-4">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search workflows..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 w-full border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                />
+              </div>
+              
+              <div className="flex gap-4">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={visaTypeFilter} onValueChange={setVisaTypeFilter}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Visa Type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white">
+                    <SelectItem value="all">All Types</SelectItem>
+                    {uniqueVisaTypes.map(type => (
+                      <SelectItem key={type} value={type}>{type}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Visa Workflows */}
             <div className="space-y-4">
-              {dummyWorkflows.map((workflow) => (
+              {filteredWorkflows.map((workflow) => (
                 <Card key={workflow.id} className="bg-warm-card border border-gray-200 hover:shadow-md transition-shadow">
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start">
@@ -279,27 +349,6 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             </div>
-
-            {/* Quick Actions */}
-            <Card className="bg-warm-card border border-gray-200 mt-6">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button className="w-full justify-start" variant="outline">
-                  <Plus className="w-4 h-4 mr-2" />
-                  New H1B Workflow
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <FileText className="w-4 h-4 mr-2" />
-                  Generate Documents
-                </Button>
-                <Button className="w-full justify-start" variant="outline">
-                  <Users className="w-4 h-4 mr-2" />
-                  Invite Collaborator
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </main>
