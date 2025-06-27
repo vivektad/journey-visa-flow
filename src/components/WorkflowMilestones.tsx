@@ -333,8 +333,6 @@ const WorkflowMilestones = () => {
                         className={`cursor-pointer border rounded-lg p-3 transition-all hover:border-gray-300 ${
                           selectedTask === task.id
                             ? 'border-blue-500 bg-blue-50'
-                            : task.status === 'blocked'
-                            ? 'border-red-200 bg-red-50'
                             : 'border-gray-200 bg-white'
                         }`}
                         onClick={() => setSelectedTask(task.id)}
