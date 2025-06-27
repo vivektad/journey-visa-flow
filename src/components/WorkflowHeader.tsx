@@ -28,10 +28,17 @@ const WorkflowHeader = () => {
           </div>
         </div>
         
-        <div className="pt-2 border-t border-gray-200">
-          <div className="text-sm font-medium text-gray-500 mb-1">Assigned Lawyer</div>
-          <div className="text-base font-medium text-gray-900">Michael Rodriguez, Esq.</div>
-          <div className="text-sm text-gray-600">Immigration Attorney • mrodriguez@lawfirm.com</div>
+        <div className="pt-2 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <div className="text-sm font-medium text-gray-500 mb-1">Assigned Lawyer</div>
+            <div className="text-base font-medium text-gray-900">Michael Rodriguez, Esq.</div>
+            <div className="text-sm text-gray-600">Immigration Attorney • mrodriguez@lawfirm.com</div>
+          </div>
+          <div>
+            <div className="text-sm font-medium text-gray-500 mb-1">HR Manager</div>
+            <div className="text-base font-medium text-gray-900">Jennifer Davis</div>
+            <div className="text-sm text-gray-600">Human Resources • jdavis@company.com</div>
+          </div>
         </div>
       </CardContent>
     </Card>

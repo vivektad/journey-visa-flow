@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Task {
   id: string;
@@ -21,6 +22,13 @@ interface Milestone {
 
 const WorkflowMilestones = () => {
   const [selectedTask, setSelectedTask] = useState<string>('task-1-1');
+
+  // Mock user data for assignees
+  const users = {
+    'HR Manager': 'Jennifer Davis',
+    'Employee': 'Sarah Chen',
+    'Lawyer': 'Michael Rodriguez'
+  };
 
   const milestones: Milestone[] = [
     {
@@ -103,6 +111,11 @@ const WorkflowMilestones = () => {
     );
   };
 
+  const handleAssigneeChange = (taskId: string, newAssignee: string) => {
+    // In a real app, this would update the backend
+    console.log(`Task ${taskId} reassigned to ${newAssignee}`);
+  };
+
   const selectedTaskData = milestones
     .flatMap(m => m.tasks)
     .find(task => task.id === selectedTask);
@@ -134,7 +147,7 @@ const WorkflowMilestones = () => {
                         }`}
                         onClick={() => setSelectedTask(task.id)}
                       >
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
                             <span className="text-gray-400 text-sm">{taskIndex + 1}</span>
                             <span 
@@ -147,12 +160,14 @@ const WorkflowMilestones = () => {
                           </div>
                           {getStatusDot(task.status)}
                         </div>
-                        <div className="text-xs text-gray-500 ml-6">
-                          Assigned to: {task.assignee}
-                        </div>
                       </div>
                     ))}
                   </div>
+                  
+                  {/* Add separator line between milestones */}
+                  {milestoneIndex < milestones.length - 1 && (
+                    <div className="border-t border-gray-200 mt-6"></div>
+                  )}
                 </div>
               ))}
             </div>
@@ -184,8 +199,23 @@ const WorkflowMilestones = () => {
                     </Badge>
                   </div>
                   <p className="text-gray-600 mb-4">{selectedTaskData.description}</p>
-                  <div className="text-sm text-gray-500">
-                    <strong>Assigned to:</strong> {selectedTaskData.assignee}
+                  <div className="flex items-center space-x-4">
+                    <div className="text-sm text-gray-500">
+                      <strong>Assigned to:</strong>
+                    </div>
+                    <Select
+                      defaultValue={selectedTaskData.assignee}
+                      onValueChange={(value) => handleAssigneeChange(selectedTaskData.id, value)}
+                    >
+                      <SelectTrigger className="w-48">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="HR Manager">{users['HR Manager']} (HR Manager)</SelectItem>
+                        <SelectItem value="Employee">{users['Employee']} (Employee)</SelectItem>
+                        <SelectItem value="Lawyer">{users['Lawyer']} (Lawyer)</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
