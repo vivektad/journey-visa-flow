@@ -4,7 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Task } from '@/hooks/useTaskStatus';
-import OnboardingDataDisplay from './OnboardingDataDisplay';
+import CompanyInfoForm from './CompanyInfoForm';
+import EmployeeInfoForm from './EmployeeInfoForm';
 
 interface TaskDetailsProps {
   selectedTaskData: Task | undefined;
@@ -35,6 +36,11 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       </Card>
     );
   }
+
+  const handleFormComplete = (data: any) => {
+    console.log('Form completed:', data);
+    // In a real app, this would save the data and update task status
+  };
 
   return (
     <Card className="bg-white">
@@ -93,23 +99,24 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             </div>
           </div>
 
-          {/* Onboarding Data for Company and Employee Info tasks */}
-          {(selectedTaskData.id === 'task-1-1' || selectedTaskData.id === 'task-1-2') ? (
-            <OnboardingDataDisplay 
-              taskId={selectedTaskData.id} 
-              taskTitle={selectedTaskData.title} 
-            />
-          ) : (
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <p className="text-sm text-gray-600">
-                  Detailed information and forms for this task will be displayed here. 
-                  This section will be customized based on the specific requirements of each task.
-                </p>
+          {/* Step-based forms for Company and Employee Info tasks */}
+          <div className="border-t pt-6">
+            {selectedTaskData.id === 'task-1-1' ? (
+              <CompanyInfoForm onComplete={handleFormComplete} />
+            ) : selectedTaskData.id === 'task-1-2' ? (
+              <EmployeeInfoForm onComplete={handleFormComplete} />
+            ) : (
+              <div>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <p className="text-sm text-gray-600">
+                    Detailed information and forms for this task will be displayed here. 
+                    This section will be customized based on the specific requirements of each task.
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>
