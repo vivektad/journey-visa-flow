@@ -1,10 +1,11 @@
-
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface Task {
@@ -35,42 +36,42 @@ const WorkflowMilestones = () => {
     'Lawyer': 'Michael Rodriguez'
   };
 
-  // Company onboarding fields
-  const companyOnboardingFields = [
-    'Company Legal Name',
-    'Company Address',
-    'Company Phone Number',
-    'Company Email',
-    'Federal Employer Identification Number (FEIN)',
-    'NAICS Code',
-    'Year Company was Founded',
-    'Number of Employees',
-    'Primary Contact Name',
-    'Primary Contact Title',
-    'Primary Contact Email',
-    'Primary Contact Phone'
-  ];
+  // Company onboarding data with values
+  const companyOnboardingData = {
+    'Company Legal Name': 'TechCorp Solutions Inc.',
+    'Company Address': '123 Innovation Drive, San Francisco, CA 94105',
+    'Company Phone Number': '+1 (555) 123-4567',
+    'Company Email': 'info@techcorpsolutions.com',
+    'Federal Employer Identification Number (FEIN)': '12-3456789',
+    'NAICS Code': '541511',
+    'Year Company was Founded': '2018',  
+    'Number of Employees': '127',
+    'Primary Contact Name': 'Jennifer Davis',
+    'Primary Contact Title': 'HR Manager',
+    'Primary Contact Email': 'jennifer.davis@techcorpsolutions.com',
+    'Primary Contact Phone': '+1 (555) 123-4501'
+  };
 
-  // Employee onboarding fields
-  const employeeOnboardingFields = [
-    'Full Legal Name',
-    'Date of Birth',
-    'Country of Birth',
-    'Gender',
-    'Current Address',
-    'Phone Number',
-    'Email Address',
-    'Passport Number',
-    'Passport Country of Issuance',
-    'Passport Expiration Date',
-    'Current Immigration Status',
-    'I-94 Number',
-    'Educational Background',
-    'Work Experience',
-    'Job Title',
-    'Job Description',
-    'Salary Information'
-  ];
+  // Employee onboarding data with values
+  const employeeOnboardingData = {
+    'Full Legal Name': 'Sarah Chen',
+    'Date of Birth': '1990-03-15',
+    'Country of Birth': 'China',
+    'Gender': 'Female',
+    'Current Address': '456 Market Street, Apt 12B, San Francisco, CA 94102',
+    'Phone Number': '+1 (555) 987-6543',
+    'Email Address': 'sarah.chen@techcorpsolutions.com',
+    'Passport Number': 'E12345678',
+    'Passport Country of Issuance': 'China',
+    'Passport Expiration Date': '2028-12-15',
+    'Current Immigration Status': 'F-1 Student',
+    'I-94 Number': '94567891234',
+    'Educational Background': 'Master of Science in Computer Science, Stanford University (2020)',
+    'Work Experience': 'Software Engineer at TechStart (2020-2022), Senior Software Engineer at DataFlow (2022-2024)',
+    'Job Title': 'Senior Software Engineer',
+    'Job Description': 'Design and develop scalable web applications, lead technical architecture decisions, mentor junior developers',
+    'Salary Information': '$145,000 annually'
+  };
 
   const milestones: Milestone[] = [
     {
@@ -349,14 +350,14 @@ const WorkflowMilestones = () => {
     });
   };
 
-  // Get onboarding fields based on task
-  const getOnboardingFields = (taskId: string) => {
+  // Get onboarding data based on task
+  const getOnboardingData = (taskId: string) => {
     if (taskId === 'task-1-1') {
-      return companyOnboardingFields;
+      return companyOnboardingData;
     } else if (taskId === 'task-1-2') {
-      return employeeOnboardingFields;
+      return employeeOnboardingData;
     }
-    return [];
+    return {};
   };
 
   return (
@@ -484,29 +485,32 @@ const WorkflowMilestones = () => {
                   </div>
                 </div>
 
-                {/* Onboarding Fields for Company and Employee Info tasks */}
+                {/* Onboarding Data for Company and Employee Info tasks */}
                 {(selectedTaskData.id === 'task-1-1' || selectedTaskData.id === 'task-1-2') && (
                   <div className="border-t pt-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-4">
-                      {selectedTaskData.id === 'task-1-1' ? 'Company Information Collected' : 'Employee Information Collected'}
+                      {selectedTaskData.id === 'task-1-1' ? 'Company Information for Verification' : 'Employee Information for Verification'}
                     </h3>
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="fields">
-                        <AccordionTrigger>
-                          View Collected Fields ({getOnboardingFields(selectedTaskData.id).length} items)
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                            {getOnboardingFields(selectedTaskData.id).map((field, index) => (
-                              <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
-                                <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                                <span className="text-sm text-gray-700">{field}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {Object.entries(getOnboardingData(selectedTaskData.id)).map(([field, value]) => (
+                        <div key={field} className="space-y-2">
+                          <Label htmlFor={field} className="text-sm font-medium text-gray-700">
+                            {field}
+                          </Label>
+                          <Input
+                            id={field}
+                            value={value}
+                            readOnly
+                            className="bg-gray-50 border-gray-200"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-sm text-gray-500 italic">
+                        All information has been collected and is ready for verification. Please review the details above before proceeding.
+                      </p>
+                    </div>
                   </div>
                 )}
 
