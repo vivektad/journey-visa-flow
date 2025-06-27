@@ -130,27 +130,30 @@ const WorkflowMilestones = () => {
     .flatMap(m => m.tasks)
     .find(task => task.id === selectedTask);
 
+  // Helper function to convert task index to letter
+  const getTaskLetter = (index: number) => String.fromCharCode(65 + index); // A, B, C, etc.
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left Column - Milestones and Tasks */}
       <div className="lg:col-span-1">
         <Card className="bg-white">
-          <CardContent className="p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-6">Workflow Milestones</h2>
+          <CardContent className="p-4">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Workflow Milestones</h2>
             
-            <div className="space-y-6">
+            <div className="space-y-3">
               {filteredMilestones.map((milestone, milestoneIndex) => (
                 <div key={milestone.id}>
-                  <div className="flex items-center space-x-3 mb-4">
+                  <div className="flex items-center space-x-3 mb-2">
                     <span className="text-gray-400 font-semibold text-base">{milestoneIndex + 1}</span>
                     <h3 className="text-base font-semibold text-gray-900">{milestone.title}</h3>
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-1">
                     {milestone.tasks.map((task, taskIndex) => (
                       <div
                         key={task.id}
-                        className={`cursor-pointer border rounded-lg p-4 transition-all hover:border-gray-300 ${
+                        className={`cursor-pointer border rounded-lg p-3 transition-all hover:border-gray-300 ${
                           selectedTask === task.id
                             ? 'border-blue-500 bg-blue-50'
                             : 'border-gray-200 bg-white'
@@ -159,7 +162,7 @@ const WorkflowMilestones = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2">
-                            <span className="text-gray-400 text-sm">{taskIndex + 1}</span>
+                            <span className="text-gray-400 text-sm font-medium">{getTaskLetter(taskIndex)}</span>
                             <span 
                               className={`text-sm font-medium ${
                                 task.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-900'
@@ -176,14 +179,14 @@ const WorkflowMilestones = () => {
                   
                   {/* Add separator line between milestones */}
                   {milestoneIndex < filteredMilestones.length - 1 && (
-                    <div className="border-t border-gray-200 mt-6"></div>
+                    <div className="border-t border-gray-200 mt-3"></div>
                   )}
                 </div>
               ))}
             </div>
 
             {/* Show All / Show Less Toggle */}
-            <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-3 border-t border-gray-200">
               <Button
                 variant="ghost"
                 onClick={() => setShowAll(!showAll)}
