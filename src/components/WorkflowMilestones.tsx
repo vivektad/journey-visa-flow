@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 interface Task {
   id: string;
@@ -22,6 +23,7 @@ interface Milestone {
 
 const WorkflowMilestones = () => {
   const [selectedTask, setSelectedTask] = useState<string>('task-1-1');
+  const [showAll, setShowAll] = useState<boolean>(false);
 
   // Mock user data for assignees
   const users = {
@@ -88,6 +90,11 @@ const WorkflowMilestones = () => {
     }
   ];
 
+  // Filter milestones based on showAll state
+  const filteredMilestones = showAll 
+    ? milestones 
+    : milestones.filter(milestone => milestone.status === 'in-progress');
+
   const getStatusDot = (status: string) => {
     const tooltipText = status === 'completed' ? 'Completed' : 
                        status === 'in-progress' ? 'In Progress' : 
@@ -129,11 +136,11 @@ const WorkflowMilestones = () => {
             <h2 className="text-lg font-semibold text-gray-900 mb-6">Workflow Milestones</h2>
             
             <div className="space-y-6">
-              {milestones.map((milestone, milestoneIndex) => (
+              {filteredMilestones.map((milestone, milestoneIndex) => (
                 <div key={milestone.id}>
                   <div className="flex items-center space-x-3 mb-4">
-                    <span className="text-gray-400 font-medium">{milestoneIndex + 1}</span>
-                    <h3 className="text-sm font-medium text-gray-700">{milestone.title}</h3>
+                    <span className="text-gray-400 font-semibold text-base">{milestoneIndex + 1}</span>
+                    <h3 className="text-base font-semibold text-gray-900">{milestone.title}</h3>
                   </div>
                   
                   <div className="space-y-3">
@@ -165,11 +172,22 @@ const WorkflowMilestones = () => {
                   </div>
                   
                   {/* Add separator line between milestones */}
-                  {milestoneIndex < milestones.length - 1 && (
+                  {milestoneIndex < filteredMilestones.length - 1 && (
                     <div className="border-t border-gray-200 mt-6"></div>
                   )}
                 </div>
               ))}
+            </div>
+
+            {/* Show All / Show Less Toggle */}
+            <div className="mt-6 pt-4 border-t border-gray-200">
+              <Button
+                variant="ghost"
+                onClick={() => setShowAll(!showAll)}
+                className="w-full text-sm text-gray-600 hover:text-gray-900"
+              >
+                {showAll ? 'Show In Progress Only' : 'Show All Steps'}
+              </Button>
             </div>
           </CardContent>
         </Card>
