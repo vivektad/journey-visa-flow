@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -9,9 +8,11 @@ import { Button } from '@/components/ui/button';
 interface Task {
   id: string;
   title: string;
-  status: 'completed' | 'in-progress' | 'pending' | 'not-started';
+  status: 'completed' | 'in-progress' | 'pending' | 'not-started' | 'blocked';
   description?: string;
   assignee: 'HR Manager' | 'Employee' | 'Lawyer';
+  blockedBy: string[]; // Array of task IDs that must be completed before this task can start
+  blocks: string[]; // Array of task IDs that this task blocks
 }
 
 interface Milestone {
@@ -38,8 +39,24 @@ const WorkflowMilestones = () => {
       title: 'Collect Information',
       status: 'completed',
       tasks: [
-        { id: 'task-1-1', title: 'Company Info Form Complete', status: 'completed', description: 'All company information has been collected and verified.', assignee: 'HR Manager' },
-        { id: 'task-1-2', title: 'Employee\'s Info Form Complete', status: 'completed', description: 'Employee personal information and documentation collected.', assignee: 'Employee' }
+        { 
+          id: 'task-1-1', 
+          title: 'Company Info Form Complete', 
+          status: 'completed', 
+          description: 'All company information has been collected and verified.', 
+          assignee: 'HR Manager',
+          blockedBy: [],
+          blocks: ['task-2-1']
+        },
+        { 
+          id: 'task-1-2', 
+          title: 'Employee\'s Info Form Complete', 
+          status: 'completed', 
+          description: 'Employee personal information and documentation collected.', 
+          assignee: 'Employee',
+          blockedBy: [],
+          blocks: ['task-4-2']
+        }
       ]
     },
     {
@@ -47,8 +64,24 @@ const WorkflowMilestones = () => {
       title: 'Company Payment',
       status: 'in-progress',
       tasks: [
-        { id: 'task-2-1', title: 'Determine Premium Processing', status: 'completed', description: 'Premium processing requirements determined.', assignee: 'HR Manager' },
-        { id: 'task-2-2', title: 'Payment', status: 'in-progress', description: 'Processing payment for application fees.', assignee: 'HR Manager' }
+        { 
+          id: 'task-2-1', 
+          title: 'Determine Premium Processing', 
+          status: 'completed', 
+          description: 'Premium processing requirements determined.', 
+          assignee: 'HR Manager',
+          blockedBy: ['task-1-1'],
+          blocks: ['task-2-2']
+        },
+        { 
+          id: 'task-2-2', 
+          title: 'Payment', 
+          status: 'in-progress', 
+          description: 'Processing payment for application fees.', 
+          assignee: 'HR Manager',
+          blockedBy: ['task-2-1'],
+          blocks: ['task-3-1', 'task-4-1']
+        }
       ]
     },
     {
@@ -56,9 +89,33 @@ const WorkflowMilestones = () => {
       title: 'LCA Preparation',
       status: 'pending',
       tasks: [
-        { id: 'task-3-1', title: 'Collect LCA Information', status: 'not-started', description: 'Gather all necessary information for LCA preparation.', assignee: 'HR Manager' },
-        { id: 'task-3-2', title: 'Check Prevailing Wage', status: 'not-started', description: 'Verify prevailing wage requirements for the position.', assignee: 'Lawyer' },
-        { id: 'task-3-3', title: 'Complete LCA Draft Filing', status: 'not-started', description: 'Prepare and complete Labor Condition Application draft.', assignee: 'Lawyer' }
+        { 
+          id: 'task-3-1', 
+          title: 'Collect LCA Information', 
+          status: 'not-started', 
+          description: 'Gather all necessary information for LCA preparation.', 
+          assignee: 'HR Manager',
+          blockedBy: ['task-2-2'],
+          blocks: ['task-3-2']
+        },
+        { 
+          id: 'task-3-2', 
+          title: 'Check Prevailing Wage', 
+          status: 'not-started', 
+          description: 'Verify prevailing wage requirements for the position.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-3-1'],
+          blocks: ['task-3-3']
+        },
+        { 
+          id: 'task-3-3', 
+          title: 'Complete LCA Draft Filing', 
+          status: 'not-started', 
+          description: 'Prepare and complete Labor Condition Application draft.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-3-2'],
+          blocks: ['task-5-1']
+        }
       ]
     },
     {
@@ -66,9 +123,33 @@ const WorkflowMilestones = () => {
       title: 'I-129 Preparation',
       status: 'pending',
       tasks: [
-        { id: 'task-4-1', title: 'Collect I-129 Information (Employer)', status: 'not-started', description: 'Gather employer-specific information for I-129 petition.', assignee: 'HR Manager' },
-        { id: 'task-4-2', title: 'Collect I-129 Information (Employee)', status: 'not-started', description: 'Gather employee-specific information for I-129 petition.', assignee: 'Employee' },
-        { id: 'task-4-3', title: 'Complete I-129 Draft Filing', status: 'not-started', description: 'Prepare and complete Form I-129 petition draft.', assignee: 'Lawyer' }
+        { 
+          id: 'task-4-1', 
+          title: 'Collect I-129 Information (Employer)', 
+          status: 'not-started', 
+          description: 'Gather employer-specific information for I-129 petition.', 
+          assignee: 'HR Manager',
+          blockedBy: ['task-2-2', 'task-5-1'],
+          blocks: ['task-4-3']
+        },
+        { 
+          id: 'task-4-2', 
+          title: 'Collect I-129 Information (Employee)', 
+          status: 'not-started', 
+          description: 'Gather employee-specific information for I-129 petition.', 
+          assignee: 'Employee',
+          blockedBy: ['task-1-2'],
+          blocks: ['task-4-3']
+        },
+        { 
+          id: 'task-4-3', 
+          title: 'Complete I-129 Draft Filing', 
+          status: 'not-started', 
+          description: 'Prepare and complete Form I-129 petition draft.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-4-1', 'task-4-2'],
+          blocks: ['task-5-2']
+        }
       ]
     },
     {
@@ -76,8 +157,24 @@ const WorkflowMilestones = () => {
       title: 'Lawyer\'s Review',
       status: 'pending',
       tasks: [
-        { id: 'task-5-1', title: 'LCA Review Complete', status: 'not-started', description: 'Attorney review of Labor Condition Application.', assignee: 'Lawyer' },
-        { id: 'task-5-2', title: 'I-129 Review Complete', status: 'not-started', description: 'Attorney review of I-129 petition.', assignee: 'Lawyer' }
+        { 
+          id: 'task-5-1', 
+          title: 'LCA Review Complete', 
+          status: 'not-started', 
+          description: 'Attorney review of Labor Condition Application.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-3-3'],
+          blocks: ['task-6-1', 'task-4-1']
+        },
+        { 
+          id: 'task-5-2', 
+          title: 'I-129 Review Complete', 
+          status: 'not-started', 
+          description: 'Attorney review of I-129 petition.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-4-3'],
+          blocks: ['task-6-3']
+        }
       ]
     },
     {
@@ -85,26 +182,98 @@ const WorkflowMilestones = () => {
       title: 'Submit Filings and Payment',
       status: 'pending',
       tasks: [
-        { id: 'task-6-1', title: 'Submit LCA', status: 'not-started', description: 'Submit Labor Condition Application to DOL.', assignee: 'Lawyer' },
-        { id: 'task-6-2', title: 'Confirm LCA Acceptance', status: 'not-started', description: 'Confirm DOL acceptance of LCA.', assignee: 'Lawyer' },
-        { id: 'task-6-3', title: 'Submit I-129', status: 'not-started', description: 'Submit I-129 petition to USCIS.', assignee: 'Lawyer' },
-        { id: 'task-6-4', title: 'Confirm Receipt of I-797', status: 'not-started', description: 'Confirm receipt of I-797 notice from USCIS.', assignee: 'Lawyer' }
+        { 
+          id: 'task-6-1', 
+          title: 'Submit LCA', 
+          status: 'not-started', 
+          description: 'Submit Labor Condition Application to DOL.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-5-1'],
+          blocks: ['task-6-2']
+        },
+        { 
+          id: 'task-6-2', 
+          title: 'Confirm LCA Acceptance', 
+          status: 'not-started', 
+          description: 'Confirm DOL acceptance of LCA.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-6-1'],
+          blocks: ['task-6-3']
+        },
+        { 
+          id: 'task-6-3', 
+          title: 'Submit I-129', 
+          status: 'not-started', 
+          description: 'Submit I-129 petition to USCIS.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-6-2', 'task-5-2'],
+          blocks: ['task-6-4']
+        },
+        { 
+          id: 'task-6-4', 
+          title: 'Confirm Receipt of I-797', 
+          status: 'not-started', 
+          description: 'Confirm receipt of I-797 notice from USCIS.', 
+          assignee: 'Lawyer',
+          blockedBy: ['task-6-3'],
+          blocks: []
+        }
       ]
     }
   ];
 
+  // Create a map of all tasks for easy lookup
+  const allTasks = useMemo(() => {
+    const taskMap = new Map<string, Task>();
+    milestones.forEach(milestone => {
+      milestone.tasks.forEach(task => {
+        taskMap.set(task.id, task);
+      });
+    });
+    return taskMap;
+  }, []);
+
+  // Calculate task status based on dependencies
+  const getCalculatedTaskStatus = (task: Task): Task['status'] => {
+    // If task is already completed or in-progress, keep that status
+    if (task.status === 'completed' || task.status === 'in-progress') {
+      return task.status;
+    }
+
+    // Check if all blocking tasks are completed
+    const isBlocked = task.blockedBy.some(blockingTaskId => {
+      const blockingTask = allTasks.get(blockingTaskId);
+      return !blockingTask || blockingTask.status !== 'completed';
+    });
+
+    return isBlocked ? 'blocked' : 'pending';
+  };
+
+  // Update milestones with calculated task statuses
+  const milestonesWithCalculatedStatus = useMemo(() => {
+    return milestones.map(milestone => ({
+      ...milestone,
+      tasks: milestone.tasks.map(task => ({
+        ...task,
+        status: getCalculatedTaskStatus(task)
+      }))
+    }));
+  }, [allTasks]);
+
   // Filter milestones based on showAll state
   const filteredMilestones = showAll 
-    ? milestones 
-    : milestones.filter(milestone => milestone.status === 'in-progress');
+    ? milestonesWithCalculatedStatus 
+    : milestonesWithCalculatedStatus.filter(milestone => milestone.status === 'in-progress');
 
   const getStatusDot = (status: string) => {
     const tooltipText = status === 'completed' ? 'Completed' : 
                        status === 'in-progress' ? 'In Progress' : 
-                       'Not Started';
+                       status === 'blocked' ? 'Blocked' :
+                       'Available';
     
     const dotColor = status === 'completed' ? 'bg-green-500' : 
                      status === 'in-progress' ? 'bg-blue-500' : 
+                     status === 'blocked' ? 'bg-red-500' :
                      'bg-gray-400';
 
     return (
@@ -126,12 +295,20 @@ const WorkflowMilestones = () => {
     console.log(`Task ${taskId} reassigned to ${newAssignee}`);
   };
 
-  const selectedTaskData = milestones
+  const selectedTaskData = milestonesWithCalculatedStatus
     .flatMap(m => m.tasks)
     .find(task => task.id === selectedTask);
 
   // Helper function to convert task index to letter
   const getTaskLetter = (index: number) => String.fromCharCode(65 + index); // A, B, C, etc.
+
+  // Get blocking task names for display
+  const getBlockingTaskNames = (task: Task): string[] => {
+    return task.blockedBy.map(taskId => {
+      const blockingTask = allTasks.get(taskId);
+      return blockingTask ? blockingTask.title : taskId;
+    });
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -156,6 +333,8 @@ const WorkflowMilestones = () => {
                         className={`cursor-pointer border rounded-lg p-3 transition-all hover:border-gray-300 ${
                           selectedTask === task.id
                             ? 'border-blue-500 bg-blue-50'
+                            : task.status === 'blocked'
+                            ? 'border-red-200 bg-red-50'
                             : 'border-gray-200 bg-white'
                         }`}
                         onClick={() => setSelectedTask(task.id)}
@@ -165,7 +344,9 @@ const WorkflowMilestones = () => {
                             <span className="text-gray-400 text-sm font-medium">{getTaskLetter(taskIndex)}</span>
                             <span 
                               className={`text-sm font-medium ${
-                                task.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-900'
+                                task.status === 'completed' ? 'line-through text-gray-500' : 
+                                task.status === 'blocked' ? 'text-red-600' :
+                                'text-gray-900'
                               }`}
                             >
                               {task.title}
@@ -213,16 +394,31 @@ const WorkflowMilestones = () => {
                       className={
                         selectedTaskData.status === 'completed' ? 'bg-green-100 text-green-800' :
                         selectedTaskData.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                        selectedTaskData.status === 'blocked' ? 'bg-red-100 text-red-800' :
                         'bg-gray-100 text-gray-600'
                       }
                     >
                       {selectedTaskData.status === 'completed' ? 'Completed' :
                        selectedTaskData.status === 'in-progress' ? 'In Progress' :
-                       selectedTaskData.status === 'pending' ? 'Pending' :
+                       selectedTaskData.status === 'blocked' ? 'Blocked' :
+                       selectedTaskData.status === 'pending' ? 'Available' :
                        'Not Started'}
                     </Badge>
                   </div>
                   <p className="text-gray-600 mb-4">{selectedTaskData.description}</p>
+                  
+                  {/* Show blocking information if task is blocked */}
+                  {selectedTaskData.status === 'blocked' && selectedTaskData.blockedBy.length > 0 && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                      <h4 className="text-sm font-medium text-red-800 mb-1">Blocked by:</h4>
+                      <ul className="text-sm text-red-700">
+                        {getBlockingTaskNames(selectedTaskData).map((taskName, index) => (
+                          <li key={index}>• {taskName}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
                   <div className="flex items-center space-x-4">
                     <div className="text-sm text-gray-500">
                       <strong>Assigned to:</strong>
