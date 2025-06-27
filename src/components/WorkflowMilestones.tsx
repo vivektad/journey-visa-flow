@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Clock, AlertCircle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface Task {
   id: string;
   title: string;
   status: 'completed' | 'in-progress' | 'pending' | 'not-started';
   description?: string;
+  assignee: 'HR Manager' | 'Employee' | 'Lawyer';
 }
 
 interface Milestone {
@@ -27,8 +28,8 @@ const WorkflowMilestones = () => {
       title: 'Collect Information',
       status: 'completed',
       tasks: [
-        { id: 'task-1-1', title: 'Company Info Form Complete', status: 'completed', description: 'All company information has been collected and verified.' },
-        { id: 'task-1-2', title: 'Employee\'s Info Form Complete', status: 'completed', description: 'Employee personal information and documentation collected.' }
+        { id: 'task-1-1', title: 'Company Info Form Complete', status: 'completed', description: 'All company information has been collected and verified.', assignee: 'HR Manager' },
+        { id: 'task-1-2', title: 'Employee\'s Info Form Complete', status: 'completed', description: 'Employee personal information and documentation collected.', assignee: 'Employee' }
       ]
     },
     {
@@ -36,8 +37,8 @@ const WorkflowMilestones = () => {
       title: 'Company Payment',
       status: 'in-progress',
       tasks: [
-        { id: 'task-2-1', title: 'Determine Premium Processing', status: 'completed', description: 'Premium processing requirements determined.' },
-        { id: 'task-2-2', title: 'Payment', status: 'in-progress', description: 'Processing payment for application fees.' }
+        { id: 'task-2-1', title: 'Determine Premium Processing', status: 'completed', description: 'Premium processing requirements determined.', assignee: 'HR Manager' },
+        { id: 'task-2-2', title: 'Payment', status: 'in-progress', description: 'Processing payment for application fees.', assignee: 'HR Manager' }
       ]
     },
     {
@@ -45,8 +46,8 @@ const WorkflowMilestones = () => {
       title: 'LCA Preparation',
       status: 'pending',
       tasks: [
-        { id: 'task-3-1', title: 'Check Prevailing Wage', status: 'not-started', description: 'Verify prevailing wage requirements for the position.' },
-        { id: 'task-3-2', title: 'Complete LCA Filing', status: 'not-started', description: 'Prepare and complete Labor Condition Application.' }
+        { id: 'task-3-1', title: 'Check Prevailing Wage', status: 'not-started', description: 'Verify prevailing wage requirements for the position.', assignee: 'Lawyer' },
+        { id: 'task-3-2', title: 'Complete LCA Filing', status: 'not-started', description: 'Prepare and complete Labor Condition Application.', assignee: 'Lawyer' }
       ]
     },
     {
@@ -54,7 +55,7 @@ const WorkflowMilestones = () => {
       title: 'I-129 Preparation',
       status: 'pending',
       tasks: [
-        { id: 'task-4-1', title: 'Complete I-129 Filing', status: 'not-started', description: 'Prepare and complete Form I-129 petition.' }
+        { id: 'task-4-1', title: 'Complete I-129 Filing', status: 'not-started', description: 'Prepare and complete Form I-129 petition.', assignee: 'Lawyer' }
       ]
     },
     {
@@ -62,8 +63,8 @@ const WorkflowMilestones = () => {
       title: 'Lawyer\'s Review',
       status: 'pending',
       tasks: [
-        { id: 'task-5-1', title: 'LCA Review Complete', status: 'not-started', description: 'Attorney review of Labor Condition Application.' },
-        { id: 'task-5-2', title: 'I-129 Review Complete', status: 'not-started', description: 'Attorney review of I-129 petition.' }
+        { id: 'task-5-1', title: 'LCA Review Complete', status: 'not-started', description: 'Attorney review of Labor Condition Application.', assignee: 'Lawyer' },
+        { id: 'task-5-2', title: 'I-129 Review Complete', status: 'not-started', description: 'Attorney review of I-129 petition.', assignee: 'Lawyer' }
       ]
     },
     {
@@ -71,40 +72,35 @@ const WorkflowMilestones = () => {
       title: 'Submit Filings and Payment',
       status: 'pending',
       tasks: [
-        { id: 'task-6-1', title: 'Submit LCA', status: 'not-started', description: 'Submit Labor Condition Application to DOL.' },
-        { id: 'task-6-2', title: 'Confirm LCA Acceptance', status: 'not-started', description: 'Confirm DOL acceptance of LCA.' },
-        { id: 'task-6-3', title: 'Submit I-129', status: 'not-started', description: 'Submit I-129 petition to USCIS.' },
-        { id: 'task-6-4', title: 'Confirm Receipt of I-797', status: 'not-started', description: 'Confirm receipt of I-797 notice from USCIS.' }
+        { id: 'task-6-1', title: 'Submit LCA', status: 'not-started', description: 'Submit Labor Condition Application to DOL.', assignee: 'Lawyer' },
+        { id: 'task-6-2', title: 'Confirm LCA Acceptance', status: 'not-started', description: 'Confirm DOL acceptance of LCA.', assignee: 'Lawyer' },
+        { id: 'task-6-3', title: 'Submit I-129', status: 'not-started', description: 'Submit I-129 petition to USCIS.', assignee: 'Lawyer' },
+        { id: 'task-6-4', title: 'Confirm Receipt of I-797', status: 'not-started', description: 'Confirm receipt of I-797 notice from USCIS.', assignee: 'Lawyer' }
       ]
     }
   ];
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'in-progress':
-        return <Clock className="w-4 h-4 text-blue-600" />;
-      case 'pending':
-      case 'not-started':
-        return <AlertCircle className="w-4 h-4 text-gray-400" />;
-      default:
-        return <AlertCircle className="w-4 h-4 text-gray-400" />;
-    }
-  };
+  const getStatusDot = (status: string) => {
+    const tooltipText = status === 'completed' ? 'Completed' : 
+                       status === 'in-progress' ? 'In Progress' : 
+                       'Not Started';
+    
+    const dotColor = status === 'completed' ? 'bg-green-500' : 
+                     status === 'in-progress' ? 'bg-blue-500' : 
+                     'bg-gray-400';
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'text-green-600';
-      case 'in-progress':
-        return 'text-blue-600';
-      case 'pending':
-      case 'not-started':
-        return 'text-gray-500';
-      default:
-        return 'text-gray-500';
-    }
+    return (
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className={`w-3 h-3 rounded-full ${dotColor}`} />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{tooltipText}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
   };
 
   const selectedTaskData = milestones
@@ -116,32 +112,43 @@ const WorkflowMilestones = () => {
       {/* Left Column - Milestones and Tasks */}
       <div className="lg:col-span-1">
         <Card className="bg-white">
-          <CardContent className="p-0">
-            <div className="space-y-4 p-6">
-              <h2 className="text-lg font-semibold text-gray-900">Workflow Milestones</h2>
-              
+          <CardContent className="p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">Workflow Milestones</h2>
+            
+            <div className="space-y-6">
               {milestones.map((milestone, milestoneIndex) => (
-                <div key={milestone.id} className="space-y-2">
-                  <div className="flex items-center space-x-2 text-sm font-medium text-gray-700">
-                    <span className="text-gray-400">{milestoneIndex + 1}</span>
-                    <span>{milestone.title}</span>
-                    {getStatusIcon(milestone.status)}
+                <div key={milestone.id}>
+                  <div className="flex items-center space-x-3 mb-4">
+                    <span className="text-gray-400 font-medium">{milestoneIndex + 1}</span>
+                    <h3 className="text-sm font-medium text-gray-700">{milestone.title}</h3>
                   </div>
                   
-                  <div className="ml-4 space-y-1">
+                  <div className="space-y-3">
                     {milestone.tasks.map((task, taskIndex) => (
                       <div
                         key={task.id}
-                        className={`cursor-pointer p-2 rounded text-sm transition-colors ${
+                        className={`cursor-pointer border rounded-lg p-4 transition-all hover:border-gray-300 ${
                           selectedTask === task.id
-                            ? 'bg-blue-50 text-blue-900 border-l-2 border-blue-500'
-                            : 'hover:bg-gray-50'
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 bg-white'
                         }`}
                         onClick={() => setSelectedTask(task.id)}
                       >
-                        <div className="flex items-center justify-between">
-                          <span className={getStatusColor(task.status)}>{task.title}</span>
-                          {getStatusIcon(task.status)}
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-400 text-sm">{taskIndex + 1}</span>
+                            <span 
+                              className={`text-sm font-medium ${
+                                task.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-900'
+                              }`}
+                            >
+                              {task.title}
+                            </span>
+                          </div>
+                          {getStatusDot(task.status)}
+                        </div>
+                        <div className="text-xs text-gray-500 ml-6">
+                          Assigned to: {task.assignee}
                         </div>
                       </div>
                     ))}
@@ -176,10 +183,13 @@ const WorkflowMilestones = () => {
                        'Not Started'}
                     </Badge>
                   </div>
-                  <p className="text-gray-600">{selectedTaskData.description}</p>
+                  <p className="text-gray-600 mb-4">{selectedTaskData.description}</p>
+                  <div className="text-sm text-gray-500">
+                    <strong>Assigned to:</strong> {selectedTaskData.assignee}
+                  </div>
                 </div>
 
-                {/* Task-specific content would go here */}
+                {/* Task-specific content */}
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
                   <div className="bg-gray-50 p-4 rounded-lg">
