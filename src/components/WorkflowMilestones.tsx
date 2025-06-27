@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -351,7 +352,7 @@ const WorkflowMilestones = () => {
   };
 
   // Get onboarding data based on task
-  const getOnboardingData = (taskId: string) => {
+  const getOnboardingData = (taskId: string): Record<string, string> => {
     if (taskId === 'task-1-1') {
       return companyOnboardingData;
     } else if (taskId === 'task-1-2') {
@@ -491,26 +492,41 @@ const WorkflowMilestones = () => {
                     <h3 className="text-lg font-medium text-gray-900 mb-4">
                       {selectedTaskData.id === 'task-1-1' ? 'Company Information for Verification' : 'Employee Information for Verification'}
                     </h3>
-                    <div className="space-y-4 max-h-96 overflow-y-auto">
-                      {Object.entries(getOnboardingData(selectedTaskData.id)).map(([field, value]) => (
-                        <div key={field} className="space-y-2">
-                          <Label htmlFor={field} className="text-sm font-medium text-gray-700">
-                            {field}
-                          </Label>
-                          <Input
-                            id={field}
-                            value={value}
-                            readOnly
-                            className="bg-gray-50 border-gray-200"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <div className="mt-4 pt-4 border-t border-gray-200">
-                      <p className="text-sm text-gray-500 italic">
-                        All information has been collected and is ready for verification. Please review the details above before proceeding.
-                      </p>
-                    </div>
+                    
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="onboarding-data">
+                        <AccordionTrigger className="text-left">
+                          <div className="flex items-center space-x-2">
+                            <span>View Collected Information</span>
+                            <Badge variant="outline" className="text-xs">
+                              {Object.keys(getOnboardingData(selectedTaskData.id)).length} fields
+                            </Badge>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-4 max-h-96 overflow-y-auto pt-4">
+                            {Object.entries(getOnboardingData(selectedTaskData.id)).map(([field, value]) => (
+                              <div key={field} className="space-y-2">
+                                <Label htmlFor={field} className="text-sm font-medium text-gray-700">
+                                  {field}
+                                </Label>
+                                <Input
+                                  id={field}
+                                  value={String(value)}
+                                  readOnly
+                                  className="bg-gray-50 border-gray-200"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-4 pt-4 border-t border-gray-200">
+                            <p className="text-sm text-gray-500 italic">
+                              All information has been collected and is ready for verification. Please review the details above before proceeding.
+                            </p>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 )}
 
