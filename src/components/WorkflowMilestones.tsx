@@ -56,8 +56,9 @@ const WorkflowMilestones = () => {
       title: 'LCA Preparation',
       status: 'pending',
       tasks: [
-        { id: 'task-3-1', title: 'Check Prevailing Wage', status: 'not-started', description: 'Verify prevailing wage requirements for the position.', assignee: 'Lawyer' },
-        { id: 'task-3-2', title: 'Complete LCA Filing', status: 'not-started', description: 'Prepare and complete Labor Condition Application.', assignee: 'Lawyer' }
+        { id: 'task-3-1', title: 'Collect LCA Information', status: 'not-started', description: 'Gather all necessary information for LCA preparation.', assignee: 'HR Manager' },
+        { id: 'task-3-2', title: 'Check Prevailing Wage', status: 'not-started', description: 'Verify prevailing wage requirements for the position.', assignee: 'Lawyer' },
+        { id: 'task-3-3', title: 'Complete LCA Draft Filing', status: 'not-started', description: 'Prepare and complete Labor Condition Application draft.', assignee: 'Lawyer' }
       ]
     },
     {
@@ -65,7 +66,9 @@ const WorkflowMilestones = () => {
       title: 'I-129 Preparation',
       status: 'pending',
       tasks: [
-        { id: 'task-4-1', title: 'Complete I-129 Filing', status: 'not-started', description: 'Prepare and complete Form I-129 petition.', assignee: 'Lawyer' }
+        { id: 'task-4-1', title: 'Collect I-129 Information (Employer)', status: 'not-started', description: 'Gather employer-specific information for I-129 petition.', assignee: 'HR Manager' },
+        { id: 'task-4-2', title: 'Collect I-129 Information (Employee)', status: 'not-started', description: 'Gather employee-specific information for I-129 petition.', assignee: 'Employee' },
+        { id: 'task-4-3', title: 'Complete I-129 Draft Filing', status: 'not-started', description: 'Prepare and complete Form I-129 petition draft.', assignee: 'Lawyer' }
       ]
     },
     {
