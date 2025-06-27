@@ -1,9 +1,11 @@
+
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface Task {
   id: string;
@@ -32,6 +34,43 @@ const WorkflowMilestones = () => {
     'Employee': 'Sarah Chen',
     'Lawyer': 'Michael Rodriguez'
   };
+
+  // Company onboarding fields
+  const companyOnboardingFields = [
+    'Company Legal Name',
+    'Company Address',
+    'Company Phone Number',
+    'Company Email',
+    'Federal Employer Identification Number (FEIN)',
+    'NAICS Code',
+    'Year Company was Founded',
+    'Number of Employees',
+    'Primary Contact Name',
+    'Primary Contact Title',
+    'Primary Contact Email',
+    'Primary Contact Phone'
+  ];
+
+  // Employee onboarding fields
+  const employeeOnboardingFields = [
+    'Full Legal Name',
+    'Date of Birth',
+    'Country of Birth',
+    'Gender',
+    'Current Address',
+    'Phone Number',
+    'Email Address',
+    'Passport Number',
+    'Passport Country of Issuance',
+    'Passport Expiration Date',
+    'Current Immigration Status',
+    'I-94 Number',
+    'Educational Background',
+    'Work Experience',
+    'Job Title',
+    'Job Description',
+    'Salary Information'
+  ];
 
   const milestones: Milestone[] = [
     {
@@ -310,6 +349,16 @@ const WorkflowMilestones = () => {
     });
   };
 
+  // Get onboarding fields based on task
+  const getOnboardingFields = (taskId: string) => {
+    if (taskId === 'task-1-1') {
+      return companyOnboardingFields;
+    } else if (taskId === 'task-1-2') {
+      return employeeOnboardingFields;
+    }
+    return [];
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Left Column - Milestones and Tasks */}
@@ -342,9 +391,7 @@ const WorkflowMilestones = () => {
                             <span className="text-gray-400 text-sm font-medium">{getTaskLetter(taskIndex)}</span>
                             <span 
                               className={`text-sm font-medium ${
-                                task.status === 'completed' ? 'line-through text-gray-500' : 
-                                task.status === 'blocked' ? 'text-red-600' :
-                                'text-gray-900'
+                                task.status === 'completed' ? 'line-through text-gray-500' : 'text-gray-900'
                               }`}
                             >
                               {task.title}
@@ -437,16 +484,44 @@ const WorkflowMilestones = () => {
                   </div>
                 </div>
 
-                {/* Task-specific content */}
-                <div className="border-t pt-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm text-gray-600">
-                      Detailed information and forms for this task will be displayed here. 
-                      This section will be customized based on the specific requirements of each task.
-                    </p>
+                {/* Onboarding Fields for Company and Employee Info tasks */}
+                {(selectedTaskData.id === 'task-1-1' || selectedTaskData.id === 'task-1-2') && (
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">
+                      {selectedTaskData.id === 'task-1-1' ? 'Company Information Collected' : 'Employee Information Collected'}
+                    </h3>
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="fields">
+                        <AccordionTrigger>
+                          View Collected Fields ({getOnboardingFields(selectedTaskData.id).length} items)
+                        </AccordionTrigger>
+                        <AccordionContent>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {getOnboardingFields(selectedTaskData.id).map((field, index) => (
+                              <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded">
+                                <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                                <span className="text-sm text-gray-700">{field}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
-                </div>
+                )}
+
+                {/* Default Task-specific content for other tasks */}
+                {selectedTaskData.id !== 'task-1-1' && selectedTaskData.id !== 'task-1-2' && (
+                  <div className="border-t pt-6">
+                    <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm text-gray-600">
+                        Detailed information and forms for this task will be displayed here. 
+                        This section will be customized based on the specific requirements of each task.
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center py-8">
