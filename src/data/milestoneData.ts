@@ -34,9 +34,9 @@ export const milestones: Milestone[] = [
     tasks: [
       { 
         id: 'task-2-1', 
-        title: 'Determine Premium Processing', 
+        title: 'Determine Processing Priority', 
         status: 'completed', 
-        description: 'Premium processing requirements determined.', 
+        description: 'Processing priority requirements determined.', 
         assignee: 'HR Manager',
         blockedBy: ['task-1-1'],
         blocks: ['task-2-2']

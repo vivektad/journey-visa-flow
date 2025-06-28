@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Task } from '@/hooks/useTaskStatus';
 import CompanyInfoForm from './CompanyInfoForm';
 import EmployeeInfoForm from './EmployeeInfoForm';
+import ProcessingPriorityForm from './ProcessingPriorityForm';
 
 interface TaskDetailsProps {
   selectedTaskData: Task | undefined;
@@ -99,12 +99,14 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             </div>
           </div>
 
-          {/* Step-based forms for Company and Employee Info tasks */}
+          {/* Step-based forms for specific tasks */}
           <div className="border-t pt-6">
             {selectedTaskData.id === 'task-1-1' ? (
               <CompanyInfoForm onComplete={handleFormComplete} />
             ) : selectedTaskData.id === 'task-1-2' ? (
               <EmployeeInfoForm onComplete={handleFormComplete} />
+            ) : selectedTaskData.id === 'task-2-1' ? (
+              <ProcessingPriorityForm onComplete={handleFormComplete} />
             ) : (
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
