@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
+
+@layer base {
+  :root {
+    --background: 46 20% 97%;
+    --foreground: 30 15% 15%;
+
+    --card: 46 20% 99%;
+    --card-foreground: 30 15% 15%;
+
+    --popover: 46 20% 99%;
+    --popover-foreground: 30 15% 15%;
+
+    --primary: 30 25% 25%;
+    --primary-foreground: 46 20% 97%;
+
+    --secondary: 44 15% 88%;
+    --secondary-foreground: 30 15% 25%;
+
+    --muted: 44 15% 92%;
+    --muted-foreground: 30 8% 46%;
+
+    --accent: 44 15% 92%;
+    --accent-foreground: 30 15% 25%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 46 20% 97%;
+
+    --border: 44 12% 85%;
+    --input: 44 12% 85%;
+    --ring: 30 25% 25%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 46 20% 96%;
+    --sidebar-foreground: 30 15% 25%;
+    --sidebar-primary: 30 25% 25%;
+    --sidebar-primary-foreground: 46 20% 97%;
+    --sidebar-accent: 44 15% 90%;
+    --sidebar-accent-foreground: 30 15% 25%;
+    --sidebar-border: 44 12% 82%;
+    --sidebar-ring: 30 25% 25%;
+
+    /* Custom brownish colors for the design */
+    --warm-bg: 44 18% 94%;
+    --warm-card: 46 20% 98%;
+    --warm-accent: 42 25% 88%;
+    --sage-green: 95 15% 75%;
+    --soft-orange: 25 45% 80%;
+    --muted-blue: 210 25% 85%;
+    --warm-purple: 280 20% 85%;
+  }
+
+  .dark {
+    --background: 30 15% 8%;
+    --foreground: 46 20% 92%;
+
+    --card: 30 15% 10%;
+    --card-foreground: 46 20% 92%;
+
+    --popover: 30 15% 10%;
+    --popover-foreground: 46 20% 92%;
+
+    --primary: 46 20% 92%;
+    --primary-foreground: 30 15% 8%;
+
+    --secondary: 30 8% 18%;
+    --secondary-foreground: 46 20% 92%;
+
+    --muted: 30 8% 18%;
+    --muted-foreground: 44 12% 65%;
+
+    --accent: 30 8% 18%;
+    --accent-foreground: 46 20% 92%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 46 20% 92%;
+
+    --border: 30 8% 18%;
+    --input: 30 8% 18%;
+    --ring: 46 20% 83%;
+    --sidebar-background: 30 15% 8%;
+    --sidebar-foreground: 46 20% 90%;
+    --sidebar-primary: 42 45% 48%;
+    --sidebar-primary-foreground: 46 20% 97%;
+    --sidebar-accent: 30 8% 15%;
+    --sidebar-accent-foreground: 46 20% 90%;
+    --sidebar-border: 30 8% 15%;
+    --sidebar-ring: 46 20% 83%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom utility classes for the warm color scheme */
+@layer utilities {
+  .bg-warm {
+    background-color: hsl(var(--warm-bg));
+  }
+  
+  .bg-warm-card {
+    background-color: hsl(var(--warm-card));
+  }
+  
+  .bg-sage {
+    background-color: hsl(var(--sage-green));
+  }
+  
+  .bg-soft-orange {
+    background-color: hsl(var(--soft-orange));
+  }
+  
+  .bg-muted-blue {
+    background-color: hsl(var(--muted-blue));
+  }
+  
+  .bg-warm-purple {
+    background-color: hsl(var(--warm-purple));
+  }
+}
