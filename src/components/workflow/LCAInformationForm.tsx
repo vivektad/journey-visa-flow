@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Info, Check, ArrowRight, ArrowLeft } from 'lucide-react';
 
@@ -22,12 +22,12 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
     endDate: '',
     totalWorkerPositions: '',
     visaClassificationBasis: {
-      newEmployment: false,
-      continuation: false,
-      changeInEmployment: false,
-      newConcurrent: false,
-      changeInEmployer: false,
-      amendedPetition: false
+      newEmployment: '',
+      continuation: '',
+      changeInEmployment: '',
+      newConcurrent: '',
+      changeInEmployer: '',
+      amendedPetition: ''
     }
   });
 
@@ -38,18 +38,18 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
     }));
   };
 
-  const updateVisaBasis = (field: string, checked: boolean) => {
+  const updateVisaBasis = (field: string, value: string) => {
     setFormData(prev => ({
       ...prev,
       visaClassificationBasis: {
         ...prev.visaClassificationBasis,
-        [field]: checked
+        [field]: value
       }
     }));
   };
 
   const nextStep = () => {
-    if (currentStep < 3) setCurrentStep(currentStep + 1);
+    if (currentStep < 2) setCurrentStep(currentStep + 1);
   };
 
   const prevStep = () => {
@@ -62,7 +62,6 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
 
   const isStep1Valid = formData.jobTitle && formData.socCode && formData.isFullTime;
   const isStep2Valid = formData.beginDate && formData.endDate && formData.totalWorkerPositions;
-  const isStep3Valid = Object.values(formData.visaClassificationBasis).some(Boolean);
 
   return (
     <div className="space-y-6">
@@ -74,7 +73,7 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
         
         {/* Step Indicator */}
         <div className="flex items-center space-x-4 mb-6">
-          {[1, 2, 3].map((step) => (
+          {[1, 2].map((step) => (
             <div key={step} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step === currentStep ? 'bg-blue-600 text-white' :
@@ -83,7 +82,7 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
               }`}>
                 {step < currentStep ? <Check className="h-4 w-4" /> : step}
               </div>
-              {step < 3 && (
+              {step < 2 && (
                 <div className={`w-16 h-1 mx-2 ${
                   step < currentStep ? 'bg-green-600' : 'bg-gray-200'
                 }`} />
@@ -96,10 +95,9 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
       <Card>
         <CardHeader>
           <CardTitle className="text-base">
-            Step {currentStep} of 3: {
+            Step {currentStep} of 2: {
               currentStep === 1 ? 'Job Information' :
-              currentStep === 2 ? 'Employment Dates & Positions' :
-              'Visa Classification Basis'
+              'Employment Dates & Visa Classification'
             }
           </CardTitle>
         </CardHeader>
@@ -166,7 +164,7 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
 
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <Label htmlFor="totalWorkerPositions">Total Worker Positions Being Requested for Certification</Label>
+                  <Label htmlFor="totalWorkerPositions">B.7. Total Worker Positions Being Requested for Certification</Label>
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
@@ -187,38 +185,40 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
                   placeholder="1"
                 />
               </div>
+
+              <div className="space-y-4 mt-6">
+                <div>
+                  <Label className="text-base font-medium">B.7a-f. Basis for the visa classification supported by this application</Label>
+                  <p className="text-sm text-gray-600 mt-1">(indicate total workers in each applicable category)</p>
+                </div>
+
+                <div className="space-y-4">
+                  {[
+                    { key: 'newEmployment', label: 'a. New Employment' },
+                    { key: 'continuation', label: 'b. Continuation of previously approved employment without change with the same employer' },
+                    { key: 'changeInEmployment', label: 'c. Change in previously approved employment' },
+                    { key: 'newConcurrent', label: 'd. New concurrent employment' },
+                    { key: 'changeInEmployer', label: 'e. Change in employer' },
+                    { key: 'amendedPetition', label: 'f. Amended petition' }
+                  ].map((option) => (
+                    <div key={option.key} className="space-y-2">
+                      <Label htmlFor={option.key} className="text-sm font-medium">
+                        {option.label}
+                      </Label>
+                      <Input
+                        id={option.key}
+                        type="number"
+                        min="0"
+                        value={formData.visaClassificationBasis[option.key as keyof typeof formData.visaClassificationBasis]}
+                        onChange={(e) => updateVisaBasis(option.key, e.target.value)}
+                        placeholder="0"
+                        className="w-full"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
             </>
-          )}
-
-          {currentStep === 3 && (
-            <div className="space-y-4">
-              <div>
-                <Label className="text-base font-medium">Basis for the visa classification supported by this application</Label>
-                <p className="text-sm text-gray-600 mt-1">(indicate total workers in each applicable category)</p>
-              </div>
-
-              <div className="space-y-3">
-                {[
-                  { key: 'newEmployment', label: 'New Employment' },
-                  { key: 'continuation', label: 'Continuation of previously approved employment without change with the same employer' },
-                  { key: 'changeInEmployment', label: 'Change in previously approved employment' },
-                  { key: 'newConcurrent', label: 'New concurrent employment' },
-                  { key: 'changeInEmployer', label: 'Change in employer' },
-                  { key: 'amendedPetition', label: 'Amended petition' }
-                ].map((option) => (
-                  <div key={option.key} className="flex items-start space-x-3">
-                    <Checkbox
-                      id={option.key}
-                      checked={formData.visaClassificationBasis[option.key as keyof typeof formData.visaClassificationBasis]}
-                      onCheckedChange={(checked) => updateVisaBasis(option.key, checked as boolean)}
-                    />
-                    <Label htmlFor={option.key} className="text-sm leading-relaxed cursor-pointer">
-                      {option.label}
-                    </Label>
-                  </div>
-                ))}
-              </div>
-            </div>
           )}
         </CardContent>
       </Card>
@@ -234,13 +234,10 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
           Previous
         </Button>
 
-        {currentStep < 3 ? (
+        {currentStep < 2 ? (
           <Button 
             onClick={nextStep}
-            disabled={
-              (currentStep === 1 && !isStep1Valid) ||
-              (currentStep === 2 && !isStep2Valid)
-            }
+            disabled={currentStep === 1 && !isStep1Valid}
           >
             Next
             <ArrowRight className="h-4 w-4 ml-2" />
@@ -248,7 +245,7 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
         ) : (
           <Button 
             onClick={handleSubmit}
-            disabled={!isStep3Valid}
+            disabled={!isStep2Valid}
           >
             <Check className="h-4 w-4 mr-2" />
             Complete LCA Information
