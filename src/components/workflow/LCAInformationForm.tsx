@@ -370,7 +370,6 @@ const LCAInformationForm: React.FC<LCAInformationFormProps> = ({ onComplete }) =
                       value={formData.lcaApplication.secondaryEntityName}
                       onChange={(e) => updateLCAApplication('secondaryEntityName', e.target.value)}
                       placeholder="Enter legal business name"
-                      disabled
                     />
                   </div>
                 )}
