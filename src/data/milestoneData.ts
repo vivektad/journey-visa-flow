@@ -9,7 +9,7 @@ export const milestones: Milestone[] = [
     tasks: [
       { 
         id: 'task-1-1', 
-        title: 'Company Info Form Complete', 
+        title: 'Company Info Form', 
         status: 'completed', 
         description: 'All company information has been collected and verified.', 
         assignee: 'HR Manager',
@@ -18,7 +18,7 @@ export const milestones: Milestone[] = [
       },
       { 
         id: 'task-1-2', 
-        title: 'Employee\'s Info Form Complete', 
+        title: 'Employee\'s Info Form', 
         status: 'completed', 
         description: 'Employee personal information and documentation collected.', 
         assignee: 'Employee',

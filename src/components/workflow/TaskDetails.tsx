@@ -6,6 +6,8 @@ import { Task } from '@/hooks/useTaskStatus';
 import CompanyInfoForm from './CompanyInfoForm';
 import EmployeeInfoForm from './EmployeeInfoForm';
 import ProcessingPriorityForm from './ProcessingPriorityForm';
+import PaymentForm from './PaymentForm';
+import LCAInformationForm from './LCAInformationForm';
 
 interface TaskDetailsProps {
   selectedTaskData: Task | undefined;
@@ -107,6 +109,10 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               <EmployeeInfoForm onComplete={handleFormComplete} />
             ) : selectedTaskData.id === 'task-2-1' ? (
               <ProcessingPriorityForm onComplete={handleFormComplete} />
+            ) : selectedTaskData.id === 'task-2-2' ? (
+              <PaymentForm onComplete={handleFormComplete} />
+            ) : selectedTaskData.id === 'task-3-1' ? (
+              <LCAInformationForm onComplete={handleFormComplete} />
             ) : (
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Task Details</h3>
